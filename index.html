@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
 <style>
+
 *{
   margin:0;
   padding:0;
@@ -20,6 +21,7 @@ body{
   color:white;
 }
 
+/* NAVBAR */
 nav{
   display:flex;
   justify-content:space-between;
@@ -42,6 +44,7 @@ nav{
   color:#aaa;
   padding:8px 16px;
   border-radius:20px;
+  cursor:pointer;
 }
 
 .nav-links a.active{
@@ -49,6 +52,7 @@ nav{
   color:black;
 }
 
+/* SECTIONS */
 section{
   display:none;
   padding:120px 40px;
@@ -95,6 +99,7 @@ section.active{
   font-size:1.5rem;
 }
 
+/* PROJECT VIEW */
 .project-view{
   display:none;
 }
@@ -138,7 +143,10 @@ section.active{
 <body>
 
 <nav>
-  <div><b>Barghavan Rajeshkanna</b><br><small>FX Artist</small></div>
+  <div>
+    <b>Barghavan Rajeshkanna</b><br>
+    <small>FX Artist</small>
+  </div>
 
   <div class="nav-links">
     <a onclick="showPage('home')" class="active">Home</a>
@@ -180,7 +188,7 @@ section.active{
 
 </div>
 
-<!-- PROJECT DETAIL -->
+<!-- PROJECT DETAILS -->
 
 <div id="stilllife" class="project-view">
   <div class="back" onclick="closeProject()">← Back</div>
