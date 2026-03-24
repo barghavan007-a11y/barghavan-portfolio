@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Barghavan Rajeshkanna</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #050608;
+      --bg-2: #0b0e13;
+      --panel: rgba(255, 255, 255, 0.04);
+      --panel-2: rgba(255, 255, 255, 0.06);
+      --border: rgba(255, 255, 255, 0.1);
+      --text: #f4f7fb;
+      --muted: #9ba6b2;
+      --accent: #4aa8ff;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+      --radius: 22px;
+      --nav-h: 76px;
+      --transition: 360ms cubic-bezier(.2,.8,.2,1);
+      --maxw: 1240px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      font-family: "Inter", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(74,168,255,0.08), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(74,168,255,0.05), transparent 26%),
+        linear-gradient(180deg, #06070a 0%, #040507 100%);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(255,255,255,0.03), rgba(255,255,255,0)),
+        repeating-linear-gradient(
+          90deg,
+          rgba(255,255,255,0.015) 0,
+          rgba(255,255,255,0.015) 1px,
+          transparent 1px,
+          transparent 120px
+        );
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent 70%);
+    }
+
+    .app {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .nav-wrap {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 50;
+      padding: 14px 24px;
+      background: linear-gradient(to bottom, rgba(5,6,8,0.92), rgba(5,6,8,0.35));
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      gap: 16px;
+    }
+
+    .brand {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    nav {
+      display: inline-flex;
+      gap: 10px;
+      padding: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: var(--shadow);
+    }
+
+    .nav-btn {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: 0.95rem;
+      font-weight: 500;
+      padding: 12px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .nav-btn:hover {
+      color: var(--text);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .nav-btn.active {
+      color: white;
+      background: linear-gradient(135deg, var(--accent), #2d7bd8);
+      box-shadow: 0 8px 24px rgba(74,168,255,0.28);
+    }
+
+    main {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .page {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(16px) scale(0.99);
+      transition:
+        opacity var(--transition),
+        transform var(--transition),
+        visibility var(--transition);
+    }
+
+    .page.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    #home {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: calc(var(--nav-h) + 18px) 18px 18px;
+    }
+
+    .reel-frame {
+      width: min(1200px, 100%);
+      height: calc(100vh - var(--nav-h) - 36px);
+      background: #000;
+      border-radius: 26px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .reel-frame iframe,
+    .reel-frame video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border: 0;
+      object-fit: cover;
+      background: #000;
+    }
+
+    #projects {
+      overflow: auto;
+      padding: calc(var(--nav-h) + 28px) 24px 30px;
+    }
+
+    .container {
+      width: min(100%, var(--maxw));
+      margin: 0 auto;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .project-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      transition:
+        transform var(--transition),
+        border-color var(--transition),
+        box-shadow var(--transition);
+      box-shadow: var(--shadow);
+    }
+
+    .project-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(74,168,255,0.35);
+      box-shadow: 0 24px 70px rgba(0,0,0,0.55);
+    }
+
+    .thumb {
+      aspect-ratio: 16 / 10;
+      width: 100%;
+      background:
+        linear-gradient(135deg, rgba(74,168,255,0.18), rgba(255,255,255,0.03)),
+        linear-gradient(180deg, #151922, #0b0e13);
+      background-size: cover;
+      background-position: center;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .thumb.has-image {
+      color: transparent;
+    }
+
+    .thumb::after {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border-radius: 14px;
+      border: 1px dashed rgba(255,255,255,0.18);
+    }
+
+    .thumb.has-image::after {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(to top, rgba(0,0,0,0.35), transparent);
+    }
+
+    .project-meta {
+      padding: 18px 18px 20px;
+    }
+
+    .project-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .project-label {
+      display: inline-block;
+      font-size: 0.82rem;
+      color: var(--accent);
+      background: rgba(74,168,255,0.1);
+      border: 1px solid rgba(74,168,255,0.18);
+      padding: 8px 10px;
+      border-radius: 999px;
+    }
+
+    .detail-view {
+      margin-top: 22px;
+      display: none;
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      animation: fadeUp 0.35s ease;
+    }
+
+    .detail-view.active {
+      display: block;
+    }
+
+    .detail-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 22px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.025);
+    }
+
+    .detail-title-wrap h2 {
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .detail-short {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .close-detail {
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      font: inherit;
+      padding: 11px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .close-detail:hover {
+      background: rgba(74,168,255,0.14);
+      border-color: rgba(74,168,255,0.3);
+    }
+
+    .detail-content {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 0;
+    }
+
+    .detail-copy {
+      padding: 24px;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      min-width: 0;
+    }
+
+    .detail-copy h3 {
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .detail-copy p {
+      color: #d7dfe8;
+      line-height: 1.75;
+      font-size: 0.98rem;
+    }
+
+    .detail-media {
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .media-box {
+      background:
+        linear-gradient(135deg, rgba(74,168,255,0.16), rgba(255,255,255,0.025)),
+        #0e1218;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      overflow: hidden;
+      min-height: 180px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+
+    .media-box.large {
+      grid-column: 1 / -1;
+      min-height: 280px;
+    }
+
+    .media-placeholder {
+      width: 100%;
+      height: 100%;
+      min-height: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.52);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0)),
+        repeating-linear-gradient(
+          45deg,
+          rgba(255,255,255,0.02) 0,
+          rgba(255,255,255,0.02) 8px,
+          transparent 8px,
+          transparent 16px
+        );
+    }
+
+    .media-box video,
+    .media-box iframe,
+    .media-box img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      border: 0;
+      background: #000;
+    }
+
+    #about {
+      overflow: auto;
+      padding: calc(var(--nav-h) + 28px) 24px 30px;
+    }
+
+    .logos-panel {
+      width: min(100%, var(--maxw));
+      margin: 0 auto;
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .logos-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .logo-card {
+      aspect-ratio: 1 / 1;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background:
+        linear-gradient(135deg, rgba(74,168,255,0.14), rgba(255,255,255,0.025)),
+        #0d1117;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      transition:
+        transform var(--transition),
+        border-color var(--transition),
+        background var(--transition);
+    }
+
+    .logo-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(74,168,255,0.3);
+      background:
+        linear-gradient(135deg, rgba(74,168,255,0.22), rgba(255,255,255,0.04)),
+        #121824;
+    }
+
+    .logo-card::after {
+      content: "Software Logo";
+      color: rgba(255,255,255,0.56);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+      position: absolute;
+    }
+
+    .logo-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      opacity: 0;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 1050px) {
+      .projects-grid { grid-template-columns: 1fr 1fr; }
+      .detail-content { grid-template-columns: 1fr; }
+      .detail-copy {
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+      }
+      .logos-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 840px) {
+      .nav-wrap {
+        justify-content: center;
+        flex-direction: column;
+        height: auto;
+        padding: 12px 14px;
+      }
+      .brand { font-size: 0.9rem; }
+      body, html { overflow: auto; }
+      main { min-height: 100vh; }
+    }
+
+    @media (max-width: 720px) {
+      :root { --nav-h: 108px; }
+      nav {
+        width: 100%;
+        justify-content: center;
+      }
+      .nav-btn {
+        flex: 1;
+        padding: 11px 10px;
+      }
+      #home, #projects, #about {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+      .reel-frame {
+        height: calc(100vh - var(--nav-h) - 28px);
+        border-radius: 18px;
+      }
+      .projects-grid { grid-template-columns: 1fr; }
+      .detail-media { grid-template-columns: 1fr; }
+      .media-box.large { min-height: 220px; }
+      .logos-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 460px) {
+      .detail-topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .logos-grid { grid-template-columns: 1fr; }
+    }
+  
+.thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease, filter 0.6s ease;
+  filter: brightness(0.85) contrast(1.05);
+}
+
+.project-card:hover .thumb-img {
+  transform: scale(1.08);
+  filter: brightness(1) contrast(1.1);
+}
+
+</style>
+</head>
+<body>
+  <div class="app">
+    <header class="nav-wrap">
+      <div class="brand">Barghavan Rajeshkanna</div>
+      <nav aria-label="Main navigation">
+        <button class="nav-btn active" data-page="home">Home</button>
+        <button class="nav-btn" data-page="projects">Projects</button>
+        <button class="nav-btn" data-page="about">About</button>
+      </nav>
+    </header>
+
+    <main>
+      <section id="home" class="page active" aria-label="Home">
+        <div class="reel-frame">
+          <!-- Demo reel intentionally left empty -->
+        </div>
+      </section>
+
+      <section id="projects" class="page" aria-label="Projects">
+        <div class="container">
+          <div class="projects-grid">
+            <article
+              class="project-card"
+              data-title="Still Life"
+              data-label="Composited / Lookdev"
+              data-description="Still Life is a cinematic tabletop-style project focused on composition, shading, reflections, and final visual polish. This section now includes your actual still life thumbnail and video space so you can present the project in a much more finished way. You can replace this text later with your final artistic statement, workflow breakdown, and production notes."
+              data-type="still-life"
+            >
+              <div class="thumb has-image"><img src="still_life_optimized.jpg" class="thumb-img" alt="Still Life Thumbnail"></div>
+              <div class="project-meta">
+                <h3 class="project-title">Still Life</h3>
+                <span class="project-label">Composited / Lookdev</span>
+              </div>
+            </article>
+
+            <article
+              class="project-card"
+              data-title="Turtle Quilt"
+              data-label="Built Using Python"
+              data-description="Turtle Quilt is a Python-driven project space intended for showcasing generative or procedural image-making logic. Use this area to explain the concept, code-driven construction, design choices, and any creative or technical challenges solved during development."
+              data-type="placeholder"
+            >
+              <div class="thumb">Thumbnail Placeholder</div>
+              <div class="project-meta">
+                <h3 class="project-title">Turtle Quilt</h3>
+                <span class="project-label">Built Using Python</span>
+              </div>
+            </article>
+
+            <article
+              class="project-card"
+              data-title="Data Visualization"
+              data-label="Built Using Python"
+              data-description="Data Visualization is a Python-based project intended to present analytical or motion-driven visual work in a clean, cinematic format. This description area can be updated with details about data sources, visual strategy, procedural methods, and how the final piece was structured."
+              data-type="placeholder"
+            >
+              <div class="thumb">Thumbnail Placeholder</div>
+              <div class="project-meta">
+                <h3 class="project-title">Data Visualization</h3>
+                <span class="project-label">Built Using Python</span>
+              </div>
+            </article>
+          </div>
+
+          <section class="detail-view" id="detailView" aria-live="polite">
+            <div class="detail-topbar">
+              <div class="detail-title-wrap">
+                <h2 id="detailTitle">Project Title</h2>
+                <div class="detail-short" id="detailLabel">Project Label</div>
+              </div>
+              <button class="close-detail" id="closeDetail">Close</button>
+            </div>
+
+            <div class="detail-content">
+              <div class="detail-copy">
+                <h3>Description</h3>
+                <p id="detailDescription"></p>
+              </div>
+
+              <div class="detail-media" id="detailMedia">
+                <div class="media-box large">
+                  <div class="media-placeholder">Project Video Space</div>
+                </div>
+                <div class="media-box">
+                  <div class="media-placeholder">Project Image</div>
+                </div>
+                <div class="media-box">
+                  <div class="media-placeholder">Project Image</div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section id="about" class="page" aria-label="About">
+        <div class="logos-panel">
+          <div class="logos-grid">
+            <div class="logo-card"><img src="" alt="Software Logo" /></div>
+            <div class="logo-card"><img src="" alt="Software Logo" /></div>
+            <div class="logo-card"><img src="" alt="Software Logo" /></div>
+            <div class="logo-card"><img src="" alt="Software Logo" /></div>
+            <div class="logo-card"><img src="" alt="Software Logo" /></div>
+            <div class="logo-card"><img src="" alt="Software Logo" /></div>
+            <div class="logo-card"><img src="" alt="Software Logo" /></div>
+            <div class="logo-card"><img src="" alt="Software Logo" /></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const pages = document.querySelectorAll('.page');
+
+    function showPage(id) {
+      pages.forEach(page => page.classList.remove('active'));
+      navButtons.forEach(btn => btn.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelector(`.nav-btn[data-page="${id}"]`).classList.add('active');
+    }
+
+    navButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        showPage(button.dataset.page);
+      });
+    });
+
+    const projectCards = document.querySelectorAll('.project-card');
+    const detailView = document.getElementById('detailView');
+    const detailTitle = document.getElementById('detailTitle');
+    const detailLabel = document.getElementById('detailLabel');
+    const detailDescription = document.getElementById('detailDescription');
+    const detailMedia = document.getElementById('detailMedia');
+    const closeDetail = document.getElementById('closeDetail');
+
+    const stillLifeMedia = `
+      <div class="media-box large">
+        <video controls playsinline>
+          <source src="SAV_2026Winter_VSFX_Barghavan_Rajeshkanna_05b.mp4" type="video/mp4" />
+        </video>
+      </div>
+      <div class="media-box">
+        <img src="1.jpg" alt="Still Life Thumbnail" />
+      </div>
+      <div class="media-box">
+        <div class="media-placeholder">Additional Still Life Image</div>
+      </div>
+    `;
+
+    const placeholderMedia = `
+      <div class="media-box large">
+        <div class="media-placeholder">Project Video Space</div>
+      </div>
+      <div class="media-box">
+        <div class="media-placeholder">Project Image</div>
+      </div>
+      <div class="media-box">
+        <div class="media-placeholder">Project Image</div>
+      </div>
+    `;
+
+    projectCards.forEach(card => {
+      card.addEventListener('click', () => {
+        detailTitle.textContent = card.dataset.title;
+        detailLabel.textContent = card.dataset.label;
+        detailDescription.textContent = card.dataset.description;
+
+        if (card.dataset.type === 'still-life') {
+          detailMedia.innerHTML = stillLifeMedia;
+        } else {
+          detailMedia.innerHTML = placeholderMedia;
+        }
+
+        detailView.classList.add('active');
+        detailView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    closeDetail.addEventListener('click', () => {
+      detailView.classList.remove('active');
+      detailMedia.innerHTML = placeholderMedia;
+    });
+  </script>
+</body>
+</html>
