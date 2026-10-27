@@ -492,16 +492,18 @@
 
     .post p, .post li{
       color: var(--muted);
+      margin-bottom: 0;
       line-height: 1.8;
       font-size: 1rem;
     }
 
     .post ul{ padding-left: 20px; display:grid; gap: 8px; }
+    .post p + p, .post figure + p, .post .post-pair + p{ margin-top: 14px; }
     .post li strong, .post p strong{ color: var(--text); font-weight: 600; }
 
     .post figure{ margin: 22px 0 6px; }
 
-    .post figure img{
+    .post figure img, .post figure video{
       width: 100%;
       display:block;
       border-radius: 14px;
@@ -699,70 +701,93 @@
 
       <article class="post" id="ga-fire-day01">
         <div class="post-meta">VFX 728 · Final Project · Day 01 · Oct 27, 2026</div>
-        <h2>Georgia Wildfire: procedural forest + COP Pyro</h2>
+        <h2>Georgia Wildfire: building the forest and getting COP Pyro running</h2>
 
-        <h3>Concept</h3>
+        <figure>
+          <video src="blog/day01/ga_fire_flipbook_day01.mp4" poster="blog/day01/flipbook_poster.jpg" controls muted loop playsinline preload="metadata"></video>
+          <figcaption>Viewport flipbook, frames 1–120. Nothing is rendered yet; this is the sim straight out of Houdini.</figcaption>
+        </figure>
+
+        <h3>The idea</h3>
         <p>
-          A shot based on the April 2026 Pineland Road and Highway 82 wildfires in southeast Georgia.
-          A slow aerial push-in over a planted pine stand: a surface fire line moves through the pine litter
-          toward a firebreak road, a few crowns torch, and spot fires jump the road.
-          All pyro is done in Copernicus (COP Pyro) in Houdini 22.
+          Back in April, two big wildfires tore through southeast Georgia: the Pineland Road fire in Clinch County
+          and the Highway 82 fire in Brantley County. It happened not far from Savannah, and the aerial news footage stuck with me,
+          especially the way the fire moved through the pine plantations as thin glowing lines instead of one big wall of flame.
+          For my final project I want to recreate one of those moments: a slow drone shot drifting over a pine stand
+          while the fire line creeps toward a dirt firebreak road, a few trees go up in flames, and the smoke builds behind it.
+        </p>
+        <p>
+          I'm also using this project to learn Copernicus Pyro (the new GPU pyro in COPs) instead of the regular DOP setup,
+          which is the part I'm most excited about.
         </p>
 
-        <h3>Reference</h3>
+        <h3>What I looked at</h3>
         <p>
-          Aerial and drone news coverage of the SE Georgia fires: a ribbon-shaped ground fire line,
-          slash and loblolly pines with bare trunks and crowns only at the top, torching single trees,
-          a firebreak road, and a large white-gray smoke column. I'm matching a dusk drone shot of the
-          fire line reaching a road. Sources are listed at the end of this post.
+          I collected news and drone photos of the Georgia fires and kept noticing the same things: the trees are tall and skinny
+          with all their branches bunched at the top, the ground fire runs in ribbons along the planted rows, single trees
+          "torch" when the fire climbs into the crown, and the roads act as firebreaks. That's what I'm building toward.
         </p>
 
-        <h3>Progress today</h3>
+        <h3>What I got done today</h3>
         <figure>
           <img src="blog/day01/01_procedural_forest_firefront.jpg" alt="Procedural pine plantation with a fire front line, seen from the aerial camera">
-          <figcaption>Procedural plantation, firebreak road, clear-cut patch and the animated fire-front attribute.</figcaption>
+          <figcaption>The procedural forest from the shot camera, with the road, a clear-cut patch and the fire line.</figcaption>
         </figure>
-        <ul>
-          <li><strong>Procedural forest:</strong> heightfield terrain (Georgia's coastal plain is almost flat, so relief is under 1 m), my own VEX pine generator (4 variants, 20–24 m tall, root flare, dead stubs on the trunk, crown branches with needle tufts), and about 4,000 instanced trees in planted rows with a sand firebreak road and clear-cut patches.</li>
-          <li><strong>Fire-front system:</strong> an animated spread attribute on the ground made from noise-driven "fingers", outputting flame, char, smolder and ember values. The road works as a firebreak, spot fires jump it after 2.5 s, and about 12% of trees torch their crowns when the front reaches them.</li>
-          <li><strong>COP Pyro:</strong> started from the stock Pyro Configure Fire setup and replaced its demo source. The fire-line and crown points are rasterized into density, temperature, flame and v volumes and fed into Pyro Block Begin as sources. Settings: 0.5 m voxels, real-world time scale, flame sourcing, disturbance and turbulence, and a 2.5 m/s wind toward the camera.</li>
-        </ul>
+        <p>
+          <strong>The forest.</strong> Everything is procedural. The terrain is a heightfield, and it's almost flat because
+          south Georgia really is that flat. I wrote a small pine tree generator in VEX that builds the trunk, the bare lower
+          stubs, the branches at the top and the needle clumps, and gives me four different trees. Those get scattered in planted
+          rows (about 4,000 trees), with a sand road cut through the middle and a couple of clear-cut patches like in the photos.
+        </p>
+        <p>
+          <strong>The fire line.</strong> Before any simulation, I needed to know where the fire is on every frame.
+          I built an animated "fire front" on the ground that moves toward the camera with some noise so it breaks into fingers
+          instead of a straight line. Anything the front passes turns black, a few embers stay glowing, and the road stops it,
+          except for a couple of small spot fires that jump across a few seconds in. About one in eight trees catch fire in the crown
+          when the front reaches them.
+        </p>
 
         <div class="post-pair">
           <figure>
             <img src="blog/day01/02_cop_pyro_f024.jpg" alt="COP Pyro smoke along the fire front at frame 24">
-            <figcaption>COP Pyro, frame 24: smoke starting along the front.</figcaption>
+            <figcaption>Frame 24: the first smoke coming off the fire line.</figcaption>
           </figure>
           <figure>
             <img src="blog/day01/03_cop_pyro_f072.jpg" alt="COP Pyro flames and torching crowns at frame 72">
-            <figcaption>COP Pyro, frame 72: fire line plus torching crowns.</figcaption>
+            <figcaption>Frame 72: flames along the line and a few trees torching.</figcaption>
           </figure>
         </div>
+        <p>
+          <strong>The pyro.</strong> I started from SideFX's built-in "Pyro Configure Fire" setup in Copernicus and swapped its
+          test source for my own. The burning parts of the fire line and the torching trees get turned into density, temperature,
+          flame and velocity volumes, and those feed the COP Pyro solver. I set it up at real-world scale (half-metre voxels)
+          and added a light wind blowing toward the camera. It sims fast on the GPU, which makes it easy to iterate.
+        </p>
 
         <div class="post-pair">
           <figure>
             <img src="blog/day01/04_cop_pyro_network.jpg" alt="Copernicus Pyro network">
-            <figcaption>Copernicus network: the stock Fire setup used as the base.</figcaption>
+            <figcaption>The Copernicus pyro network I started from.</figcaption>
           </figure>
           <figure>
             <img src="blog/day01/05_sop_network.jpg" alt="SOP network for terrain, trees, fire front and pyro sources">
-            <figcaption>SOP network: one CTRL node drives the forest, road and fire settings.</figcaption>
+            <figcaption>The main network. One control node drives the forest, the road and the fire.</figcaption>
           </figure>
         </div>
 
-        <h3>Problems I hit</h3>
+        <h3>What went wrong</h3>
         <ul>
-          <li>Houdini crashed (segfault) when Python scripts inspected the COP Pyro nodes. The stock setup runs fine on my RTX 5080 when built through the UI.</li>
-          <li>The plumes currently look round and puffy because each source point is its own blob.</li>
+          <li>Houdini crashed a few times today. I tracked it down to Python scripts poking at the COP Pyro nodes. Building the setup through the normal UI works fine, so I'm sticking with that.</li>
+          <li>The fire looks too puffy right now, like a row of little mushroom clouds. Each source point makes its own blob, so the line doesn't read as one continuous fire yet.</li>
         </ul>
 
-        <h3>Next</h3>
+        <h3>Next steps</h3>
         <ul>
-          <li>Widen the flame band so the fire line is one continuous wall.</li>
-          <li>Go to 0.25 m voxels.</li>
-          <li>More turbulence and less smoke dissipation so the smoke column builds.</li>
-          <li>POP embers driven by the sim velocity, and a char shader on the trees.</li>
-          <li>Render out to EXR.</li>
+          <li>Make the flame band wider so the fire reads as one connected line.</li>
+          <li>Drop the voxel size to 0.25 m for more detail once the look is right.</li>
+          <li>Add more turbulence and let the smoke hang around longer, so it builds into a proper column like the reference.</li>
+          <li>Add embers with POPs, and a burnt bark shader for the trees.</li>
+          <li>Light it and render to EXR.</li>
         </ul>
 
         <h3>References</h3>
