@@ -614,6 +614,14 @@
 
       <div class="grid" id="projectGrid">
 
+        <div class="card" onclick="openProject('harmonium')">
+          <img src="projects/harmonium/harmonium_poster.jpg" alt="Harmonium disintegrating into gold music notes and glitter">
+          <div class="card-title">
+            <h3>Harmonium</h3>
+            <p>FX · Particle Disintegration</p>
+          </div>
+        </div>
+
         <div class="card" onclick="openProject('matte')">
           <img src="VFX-762_Barghavan_Rajeshkanna_A05.jpg" alt="Moonlit cave shrine matte painting" onerror="this.src='https://via.placeholder.com/1200x900/111111/ffffff?text=Moonlit+Shrine';">
           <div class="card-title">
@@ -646,6 +654,30 @@
           </div>
         </div>
 
+      </div>
+
+      <div id="harmonium" class="project-view">
+        <div class="back" onclick="closeProject()">← Back to Projects</div>
+        <h1>Harmonium</h1>
+        <p class="project-description">
+          A harmonium sitting on a patterned rug in an ornate room slowly comes apart. The wood breaks into chunks and dust,
+          and the music it used to make spills out as glowing gold notes and glitter. I wanted the moment to feel like the
+          instrument is playing its last song as it disappears, and I wanted it to look real rather than CG.
+        </p>
+        <p class="project-description">
+          The effect is built in Houdini 22: the harmonium is fractured and driven apart with particles, and the notes, dust and
+          glitter are separate particle systems so each could be timed and shaded on its own. The glitter is real bead geometry
+          so it catches light properly. I rendered the beauty and its passes in Redshift through Solaris, rendered depth and
+          ID mattes in Karma, and put it all together in Nuke with depth haze, glow from the notes lighting the air, bloom,
+          film halation, grain and a light vignette.
+        </p>
+        <p class="project-description">
+          <strong style="color:var(--text)">Software:</strong> Houdini (Solaris, particles), Redshift, Karma, Nuke ·
+          <strong style="color:var(--text)">Format:</strong> 1920 × 1080, 24 fps
+        </p>
+        <div class="project-main-image">
+          <video src="projects/harmonium/harmonium_disintegration.mp4" poster="projects/harmonium/harmonium_poster.jpg" controls muted loop playsinline preload="metadata" style="width:100%;display:block;border-radius:18px;border:1px solid rgba(255,255,255,0.07);background:#111;"></video>
+        </div>
       </div>
 
       <div id="matte" class="project-view">
