@@ -453,6 +453,83 @@
       flex:0 0 8px;
     }
 
+    /* ---------- Blog ---------- */
+    .blog-wrap{ max-width: 980px; margin: 0 auto; }
+
+    .post{
+      border:1px solid var(--line);
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.022), rgba(255,255,255,0.01)),
+        #070707;
+      padding: 34px 38px 40px;
+      margin-bottom: 36px;
+    }
+
+    .post-meta{
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.82rem;
+      margin-bottom: 12px;
+    }
+
+    .post h2{
+      font-family:'Montserrat', sans-serif;
+      font-size: clamp(1.9rem, 4vw, 2.8rem);
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      margin-bottom: 18px;
+    }
+
+    .post h3{
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin: 32px 0 14px;
+    }
+
+    .post p, .post li{
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+
+    .post ul{ padding-left: 20px; display:grid; gap: 8px; }
+    .post li strong, .post p strong{ color: var(--text); font-weight: 600; }
+
+    .post figure{ margin: 22px 0 6px; }
+
+    .post figure img{
+      width: 100%;
+      display:block;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,0.07);
+      background:#111;
+    }
+
+    .post figcaption{
+      color: #8f887f;
+      font-size: 0.85rem;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .post-pair{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .post a{ color: var(--gold); text-decoration: none; overflow-wrap: anywhere; }
+    .post a:hover{ text-decoration: underline; }
+
+    @media (max-width: 768px){
+      .post{ padding: 24px 20px 28px; border-radius: 20px; }
+      .post-pair{ grid-template-columns: 1fr; }
+    }
+
     @media (max-width: 980px) {
       .about-grid{
         grid-template-columns: 1fr;
@@ -517,6 +594,7 @@
     <div class="nav-links">
       <a class="active" onclick="showPage('home', this)">Home</a>
       <a onclick="showPage('projects', this)">Projects</a>
+      <a onclick="showPage('blog', this)">Blog</a>
       <a onclick="showPage('about', this)">About</a>
     </div>
   </nav>
@@ -614,6 +692,91 @@
     </div>
   </section>
 
+  <section id="blog">
+    <div class="blog-wrap">
+      <div class="projects-kicker">Dailies</div>
+      <div class="projects-title">Blog</div>
+
+      <article class="post" id="ga-fire-day01">
+        <div class="post-meta">VFX 728 · Final Project · Day 01 · Oct 27, 2026</div>
+        <h2>Georgia Wildfire: procedural forest + COP Pyro</h2>
+
+        <h3>Concept</h3>
+        <p>
+          A shot based on the April 2026 Pineland Road and Highway 82 wildfires in southeast Georgia.
+          A slow aerial push-in over a planted pine stand: a surface fire line moves through the pine litter
+          toward a firebreak road, a few crowns torch, and spot fires jump the road.
+          All pyro is done in Copernicus (COP Pyro) in Houdini 22.
+        </p>
+
+        <h3>Reference</h3>
+        <p>
+          Aerial and drone news coverage of the SE Georgia fires: a ribbon-shaped ground fire line,
+          slash and loblolly pines with bare trunks and crowns only at the top, torching single trees,
+          a firebreak road, and a large white-gray smoke column. I'm matching a dusk drone shot of the
+          fire line reaching a road. Sources are listed at the end of this post.
+        </p>
+
+        <h3>Progress today</h3>
+        <figure>
+          <img src="blog/day01/01_procedural_forest_firefront.jpg" alt="Procedural pine plantation with a fire front line, seen from the aerial camera">
+          <figcaption>Procedural plantation, firebreak road, clear-cut patch and the animated fire-front attribute.</figcaption>
+        </figure>
+        <ul>
+          <li><strong>Procedural forest:</strong> heightfield terrain (Georgia's coastal plain is almost flat, so relief is under 1 m), my own VEX pine generator (4 variants, 20–24 m tall, root flare, dead stubs on the trunk, crown branches with needle tufts), and about 4,000 instanced trees in planted rows with a sand firebreak road and clear-cut patches.</li>
+          <li><strong>Fire-front system:</strong> an animated spread attribute on the ground made from noise-driven "fingers", outputting flame, char, smolder and ember values. The road works as a firebreak, spot fires jump it after 2.5 s, and about 12% of trees torch their crowns when the front reaches them.</li>
+          <li><strong>COP Pyro:</strong> started from the stock Pyro Configure Fire setup and replaced its demo source. The fire-line and crown points are rasterized into density, temperature, flame and v volumes and fed into Pyro Block Begin as sources. Settings: 0.5 m voxels, real-world time scale, flame sourcing, disturbance and turbulence, and a 2.5 m/s wind toward the camera.</li>
+        </ul>
+
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day01/02_cop_pyro_f024.jpg" alt="COP Pyro smoke along the fire front at frame 24">
+            <figcaption>COP Pyro, frame 24: smoke starting along the front.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day01/03_cop_pyro_f072.jpg" alt="COP Pyro flames and torching crowns at frame 72">
+            <figcaption>COP Pyro, frame 72: fire line plus torching crowns.</figcaption>
+          </figure>
+        </div>
+
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day01/04_cop_pyro_network.jpg" alt="Copernicus Pyro network">
+            <figcaption>Copernicus network: the stock Fire setup used as the base.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day01/05_sop_network.jpg" alt="SOP network for terrain, trees, fire front and pyro sources">
+            <figcaption>SOP network: one CTRL node drives the forest, road and fire settings.</figcaption>
+          </figure>
+        </div>
+
+        <h3>Problems I hit</h3>
+        <ul>
+          <li>Houdini crashed (segfault) when Python scripts inspected the COP Pyro nodes. The stock setup runs fine on my RTX 5080 when built through the UI.</li>
+          <li>The plumes currently look round and puffy because each source point is its own blob.</li>
+        </ul>
+
+        <h3>Next</h3>
+        <ul>
+          <li>Widen the flame band so the fire line is one continuous wall.</li>
+          <li>Go to 0.25 m voxels.</li>
+          <li>More turbulence and less smoke dissipation so the smoke column builds.</li>
+          <li>POP embers driven by the sim velocity, and a char shader on the trees.</li>
+          <li>Render out to EXR.</li>
+        </ul>
+
+        <h3>References</h3>
+        <ul>
+          <li><a href="https://www.wlrn.org/npr-breaking-news/2026-04-26/a-fast-growing-georgia-wildfire-tops-31-square-miles-with-evacuations-possible" target="_blank" rel="noopener">AP / NPR: A fast-growing Georgia wildfire tops 31 square miles (Apr 26, 2026)</a></li>
+          <li><a href="https://gvwire.com/?p=244267" target="_blank" rel="noopener">Reuters: South Georgia wildfires destroy homes, force evacuations (Apr 23, 2026)</a></li>
+          <li><a href="https://www.gfb.org/news/gfb-news-magazine/post/forest-fires-scorch-georgia" target="_blank" rel="noopener">Georgia Farm Bureau: Forest fires scorch Georgia (May 2026)</a></li>
+          <li><a href="https://www.sidefx.com/docs/houdini/pyro/copintro.html" target="_blank" rel="noopener">SideFX docs: Pyro in Copernicus</a></li>
+          <li><a href="https://www.sidefx.com/docs/houdini/heightfields_cop/index.html" target="_blank" rel="noopener">SideFX docs: Copernicus heightfields and terrains</a></li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
   <section id="about">
     <div class="about-shell">
       <div class="about-header">
@@ -703,6 +866,14 @@
       document.getElementById(id).classList.add("active");
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
+
+    // Deep link: barghavfx.com/#blog opens the Blog tab
+    window.addEventListener("DOMContentLoaded", () => {
+      if (location.hash === "#blog" || location.hash.startsWith("#ga-fire")) {
+        const link = [...document.querySelectorAll(".nav-links a")].find(a => a.textContent.trim() === "Blog");
+        showPage("blog", link);
+      }
+    });
 
     function closeProject() {
       const grid = document.getElementById("projectGrid");
