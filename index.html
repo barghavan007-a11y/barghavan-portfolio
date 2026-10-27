@@ -532,6 +532,25 @@
       .post-pair{ grid-template-columns: 1fr; }
     }
 
+    .post ul + p, .post ol + p, .post p + ul, .post p + ol{ margin-top: 12px; }
+    .post-sub{ color: var(--muted); font-size: 1rem; margin: -8px 0 18px; letter-spacing: 0.02em; }
+    .post h4{ font-size: 1.05rem; font-weight: 700; color: var(--text); margin: 26px 0 10px; }
+    .post ol{ padding-left: 22px; display:grid; gap: 8px; }
+    .post code{ font-family: ui-monospace, 'Cascadia Code', Consolas, monospace; font-size: 0.88em; color: var(--text);
+      background: rgba(255,255,255,0.06); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; }
+    .spec-list{ list-style: none; padding-left: 0 !important; }
+    .entry-list{ display: grid; gap: 12px; }
+    .entry-link{ display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: baseline;
+      padding: 16px 20px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,0.02);
+      color: var(--text) !important; text-decoration: none !important; transition: border-color .25s ease, transform .25s ease; }
+    .entry-link:hover{ border-color: rgba(212,163,58,.35); transform: translateY(-2px); }
+    .entry-num{ color: var(--gold); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.85rem; }
+    .entry-title{ min-width: 0; }
+    .entry-date{ color: var(--muted); font-size: 0.85rem; }
+    .entry-view{ display: none; }
+    .entry-view.active{ display: block; }
+    @media (max-width: 768px){ .entry-link{ grid-template-columns: 1fr; gap: 4px; } }
+
     @media (max-width: 980px) {
       .about-grid{
         grid-template-columns: 1fr;
@@ -701,63 +720,127 @@
       <div class="projects-kicker">Dailies</div>
       <div class="projects-title">Blog</div>
 
-      <article class="post" id="ga-fire-day01">
-        <div class="post-meta">VFX 728 · Final Project · Day 01 · Oct 27, 2026</div>
-        <h2>Georgia Wildfire: building the forest and getting COP Pyro running</h2>
+      <div id="blogIndex">
+        <article class="post blog-project">
+          <div class="post-meta">VFX 728 · Particles and Procedural Effects · Final Project</div>
+          <h2>Georgia Wildfire</h2>
+          <p class="post-sub">Forest Fire Simulation Technical Summary</p>
+
+          <figure>
+            <img src="blog/day01/03_cop_pyro_f072.jpg" alt="COP Pyro fire line and torching trees in the procedural pine forest">
+          </figure>
+
+          <h3>Summary</h3>
+          <p>
+            A slow drone shot over a pine plantation in south Georgia while a forest fire burns through it. The fire line
+            creeps through the trees toward a dirt road, a few trees catch fire up into the crown, and smoke builds behind it.
+            The forest is fully procedural and all of the fire is simulated in Copernicus Pyro (COP Pyro), the GPU pyro solver in Houdini 22.
+          </p>
+          <ul class="spec-list">
+            <li><strong>Software:</strong> Houdini 22 (SOPs, VEX, Copernicus Pyro), Nuke</li>
+            <li><strong>Shot:</strong> 5 to 10 seconds, 1920 × 1080, 24 fps</li>
+            <li><strong>Main effects:</strong> ground fire line, torching crowns, smoke column, embers</li>
+          </ul>
+
+          <h3>Detail Blogs</h3>
+          <div class="entry-list">
+            <a class="entry-link" href="#ga-fire-entry1" onclick="openEntry('ga-fire-entry1'); return false;">
+              <span class="entry-num">Entry 1</span>
+              <span class="entry-title">Procedural forest, fire front and first COP Pyro sim</span>
+              <span class="entry-date">Oct 27, 2026</span>
+            </a>
+          </div>
+        </article>
+      </div>
+
+      <article class="post entry-view" id="ga-fire-entry1">
+        <div class="back" onclick="closeEntry()">← Back to Blog</div>
+        <div class="post-meta">Georgia Wildfire · Entry 1 · Oct 27, 2026</div>
+        <h2>Entry 1 Progress Blog</h2>
+
+        <h3>Goal</h3>
+        <p>Find reference, block out the forest, and get a first fire simulation running in COP Pyro.</p>
 
         <figure>
           <video src="blog/day01/ga_fire_flipbook_day01.mp4" poster="blog/day01/flipbook_poster.jpg" controls muted loop playsinline preload="metadata"></video>
-          <figcaption>Viewport flipbook, frames 1–120. Nothing is rendered yet; this is the sim straight out of Houdini.</figcaption>
+          <figcaption>Where it stands today: viewport flipbook, frames 1 to 120.</figcaption>
         </figure>
 
-        <h3>The idea</h3>
+        <h3>References</h3>
         <p>
-          A forest fire in a Georgia pine plantation, seen from a slow drone shot. The fire line creeps through the trees
-          toward a dirt road, a few trees go up in flames, and the smoke builds behind it.
-          I'm doing all the fire in Copernicus Pyro, the new GPU pyro in Houdini, which is the part I'm most excited to learn.
+          I collected news and drone footage of the Pineland Road and Highway 82 fires in southeast Georgia. The things I want to match:
+        </p>
+        <ul>
+          <li>Tall, thin slash and loblolly pines planted in rows, with bare trunks and all the branches bunched at the top.</li>
+          <li>The ground fire moves as thin glowing ribbons through the pine litter, not as one big wall.</li>
+          <li>Single trees "torch" when the fire climbs into the crown.</li>
+          <li>Dirt roads act as firebreaks, and small spot fires sometimes jump across them.</li>
+          <li>Thick white to grey smoke that leans with the wind.</li>
+        </ul>
+        <p>
+          Sources:
+          <a href="https://www.wlrn.org/npr-breaking-news/2026-04-26/a-fast-growing-georgia-wildfire-tops-31-square-miles-with-evacuations-possible" target="_blank" rel="noopener">AP / NPR</a>,
+          <a href="https://gvwire.com/?p=244267" target="_blank" rel="noopener">Reuters</a>,
+          <a href="https://www.gfb.org/news/gfb-news-magazine/post/forest-fires-scorch-georgia" target="_blank" rel="noopener">Georgia Farm Bureau</a>.
         </p>
 
-        <h3>What I looked at</h3>
+        <h3>Process</h3>
+        <p>The shot breaks down into these parts:</p>
+        <ol>
+          <li>Procedural terrain and pine plantation</li>
+          <li>A fire front that decides where the fire is on every frame</li>
+          <li>Ground fire line (COP Pyro)</li>
+          <li>Torching crowns (COP Pyro)</li>
+          <li>Smoke column</li>
+          <li>Embers (POPs), stretch goal</li>
+        </ol>
+        <p>Today I focused on 1 to 4.</p>
+
+        <h4>Which pyro to use?</h4>
         <p>
-          I collected news and drone photos of the Georgia fires and kept noticing the same things: the trees are tall and skinny
-          with all their branches bunched at the top, the ground fire runs in ribbons along the planted rows, single trees
-          "torch" when the fire climbs into the crown, and the roads act as firebreaks. That's what I'm building toward.
+          Houdini 22 has two options: the regular Sparse Pyro solver in DOPs, and the newer COP Pyro that runs on the GPU inside Copernicus.
+          I went with COP Pyro because it sims fast enough to scrub almost in real time on my RTX 5080, which makes look development much
+          quicker, and it is something we did not cover in class, so it is a good chance to learn it. The trade-off is that COP Pyro is less
+          flexible than the DOP solver (fewer ways to add custom microsolvers), so I am keeping Sparse Pyro as a backup if I hit a wall.
         </p>
 
-        <h3>What I got done today</h3>
+        <h4>Scale</h4>
+        <p>
+          Everything is built at real-world scale in metres. The forest is 300 × 300 m and the trees are 18 to 26 m tall. A small voxel size
+          over an area that big would be far too heavy, so the sim runs at a <code>Voxel Size</code> of <code>0.5</code> for now with sparse
+          activation, so only the voxels near the fire are simulated. I also set the block's <code>Time Scale</code> back to <code>1</code>
+          (the stock fire setup uses <code>5</code> because it is built for a tiny candle-sized flame).
+        </p>
+
         <figure>
           <img src="blog/day01/01_procedural_forest_firefront.jpg" alt="Procedural pine plantation with a fire front line, seen from the aerial camera">
-          <figcaption>The procedural forest from the shot camera, with the road, a clear-cut patch and the fire line.</figcaption>
+          <figcaption>Procedural plantation from the shot camera, with the road, a clear-cut patch and the fire line.</figcaption>
         </figure>
+
+        <h4>Procedural forest</h4>
+        <ul>
+          <li><strong>Terrain:</strong> a heightfield with <code>Amplitude 2.5</code> and <code>Element Size 120</code>. South Georgia is very flat, so the relief is under a metre.</li>
+          <li><strong>Pine generator:</strong> one VEX wrangle builds the trunk (with a root flare and a few dead stubs), 9 layers of branches at the top, and needle clumps on the outer part of each branch. It outputs 4 tree variants, about 4,300 polygons each.</li>
+          <li><strong>Plantation:</strong> trees are placed in rows (<code>4.5 m</code> between rows, <code>3 m</code> between trees), with <code>30%</code> randomly missing, a sand road cut through the middle, and clear-cut patches on one side. That gives about 4,000 trees, copied as packed instances.</li>
+          <li>Everything is driven from one CTRL node, so I can change the layout without touching the network.</li>
+        </ul>
+
+        <h4>Fire front</h4>
         <p>
-          <strong>The forest.</strong> Everything is procedural. The terrain is a heightfield, and it's almost flat because
-          south Georgia really is that flat. I wrote a small pine tree generator in VEX that builds the trunk, the bare lower
-          stubs, the branches at the top and the needle clumps, and gives me four different trees. Those get scattered in planted
-          rows (about 4,000 trees), with a sand road cut through the middle and a couple of clear-cut patches like in the photos.
-        </p>
-        <p>
-          <strong>The fire line.</strong> Before any simulation, I needed to know where the fire is on every frame.
-          I built an animated "fire front" on the ground that moves toward the camera with some noise so it breaks into fingers
-          instead of a straight line. Anything the front passes turns black, a few embers stay glowing, and the road stops it,
-          except for a couple of small spot fires that jump across a few seconds in. About one in eight trees catch fire in the crown
-          when the front reaches them.
+          Before simulating anything I needed to control where the fire is on every frame. I made an animated "fire front" attribute on a
+          1 m ground grid. It moves toward the camera at <code>2 m/s</code>, and noise breaks the line into fingers instead of a straight edge.
+          Each point gets <code>flame</code>, <code>char</code>, <code>smolder</code> and <code>ember</code> values based on how long ago the
+          fire passed it. Points past the road do not burn, except a few spot fires that jump across about 2.5 seconds in.
+          About 12% of trees are flagged to torch, and their crown fire ramps up and dies down over 4 seconds once the front reaches them.
         </p>
 
-        <div class="post-pair">
-          <figure>
-            <img src="blog/day01/02_cop_pyro_f024.jpg" alt="COP Pyro smoke along the fire front at frame 24">
-            <figcaption>Frame 24: the first smoke coming off the fire line.</figcaption>
-          </figure>
-          <figure>
-            <img src="blog/day01/03_cop_pyro_f072.jpg" alt="COP Pyro flames and torching crowns at frame 72">
-            <figcaption>Frame 72: flames along the line and a few trees torching.</figcaption>
-          </figure>
-        </div>
+        <h4>Sourcing COP Pyro</h4>
         <p>
-          <strong>The pyro.</strong> I started from SideFX's built-in "Pyro Configure Fire" setup in Copernicus and swapped its
-          test source for my own. The burning parts of the fire line and the torching trees get turned into density, temperature,
-          flame and velocity volumes, and those feed the COP Pyro solver. I set it up at real-world scale (half-metre voxels)
-          and added a light wind blowing toward the camera. It sims fast on the GPU, which makes it easy to iterate.
+          I started from SideFX's built-in <em>Pyro Configure Fire</em> setup and removed its test tube source. The burning ground points and
+          the torching crowns are rasterized in SOPs into <code>density</code>, <code>temperature</code>, <code>flame</code> and <code>v</code>
+          volumes (Volume Rasterize Attributes, 0.5 m voxels). In Copernicus, a SOP Import and a Geometry to Layer node turn them into VDBs that
+          plug straight into the Pyro Block Begin inputs. On the Pyro Block End I turned on flame sourcing, disturbance, turbulence and a
+          <code>2.5 m/s</code> wind toward the camera, and lowered density dissipation to <code>0.05</code> so the smoke hangs around.
         </p>
 
         <div class="post-pair">
@@ -767,31 +850,46 @@
           </figure>
           <figure>
             <img src="blog/day01/05_sop_network.jpg" alt="SOP network for terrain, trees, fire front and pyro sources">
-            <figcaption>The main network. One control node drives the forest, the road and the fire.</figcaption>
+            <figcaption>The SOP network: terrain, trees, fire front and pyro sources.</figcaption>
           </figure>
         </div>
 
-        <h3>What went wrong</h3>
+        <h4>Iterations</h4>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day01/02_cop_pyro_f024.jpg" alt="COP Pyro smoke along the fire front at frame 24">
+            <figcaption>Iteration 1, frame 24: first smoke coming off the fire line.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day01/03_cop_pyro_f072.jpg" alt="COP Pyro flames and torching crowns at frame 72">
+            <figcaption>Iteration 1, frame 72: flames along the line and a few trees torching.</figcaption>
+          </figure>
+        </div>
+        <p>
+          The first sim works, but it reads as a row of separate puffs, like small mushroom clouds, instead of one fire line.
+          Each source point makes its own blob, and the flame band is too thin to connect them.
+        </p>
+
+        <h4>Problems</h4>
         <ul>
-          <li>Houdini crashed a few times today. I tracked it down to Python scripts poking at the COP Pyro nodes. Building the setup through the normal UI works fine, so I'm sticking with that.</li>
-          <li>The fire looks too puffy right now, like a row of little mushroom clouds. Each source point makes its own blob, so the line doesn't read as one continuous fire yet.</li>
+          <li><strong>Houdini crashing:</strong> Houdini crashed a few times when Python scripts read the COP Pyro nodes. Building and wiring the setup through the normal UI works fine, so I am sticking with that.</li>
+          <li><strong>Puffy fire:</strong> covered above. The fix is a wider flame band and more turbulence.</li>
         </ul>
 
-        <h3>Next steps</h3>
-        <ul>
-          <li>Make the flame band wider so the fire reads as one connected line.</li>
-          <li>Drop the voxel size to 0.25 m for more detail once the look is right.</li>
-          <li>Add more turbulence and let the smoke hang around longer, so it builds into a proper column like the reference.</li>
-          <li>Add embers with POPs, and a burnt bark shader for the trees.</li>
-          <li>Light it and render to EXR.</li>
-        </ul>
+        <h3>To Do</h3>
+        <ol>
+          <li>Widen the flame band from 6 m to about 14 m so the fire line connects.</li>
+          <li>Raise turbulence and disturbance to break up the round plumes.</li>
+          <li>Lower density dissipation further so a proper smoke column builds.</li>
+          <li>Drop the voxel size to 0.25 m once the look is right.</li>
+          <li>Embers with POPs, driven by the sim velocity.</li>
+          <li>Burnt bark shader for the trees, then lighting and an EXR render.</li>
+        </ol>
 
-        <h3>References</h3>
+        <h3>Learning Resources</h3>
         <ul>
-          <li><a href="https://www.wlrn.org/npr-breaking-news/2026-04-26/a-fast-growing-georgia-wildfire-tops-31-square-miles-with-evacuations-possible" target="_blank" rel="noopener">AP / NPR: A fast-growing Georgia wildfire tops 31 square miles (Apr 26, 2026)</a></li>
-          <li><a href="https://gvwire.com/?p=244267" target="_blank" rel="noopener">Reuters: South Georgia wildfires destroy homes, force evacuations (Apr 23, 2026)</a></li>
-          <li><a href="https://www.gfb.org/news/gfb-news-magazine/post/forest-fires-scorch-georgia" target="_blank" rel="noopener">Georgia Farm Bureau: Forest fires scorch Georgia (May 2026)</a></li>
           <li><a href="https://www.sidefx.com/docs/houdini/pyro/copintro.html" target="_blank" rel="noopener">SideFX docs: Pyro in Copernicus</a></li>
+          <li><a href="https://www.sidefx.com/tutorials/how-to-create-pyro-in-copernicus/" target="_blank" rel="noopener">SideFX tutorial: How to create pyro in Copernicus</a></li>
           <li><a href="https://www.sidefx.com/docs/houdini/heightfields_cop/index.html" target="_blank" rel="noopener">SideFX docs: Copernicus heightfields and terrains</a></li>
         </ul>
       </article>
@@ -876,6 +974,7 @@
       if (el) el.classList.add("active");
 
       if (pageId === "projects") closeProject();
+      if (pageId === "blog") closeEntry();
     }
 
     function openProject(id) {
@@ -889,11 +988,29 @@
 
     // Deep link: barghavfx.com/#blog opens the Blog tab
     window.addEventListener("DOMContentLoaded", () => {
-      if (location.hash === "#blog" || location.hash.startsWith("#ga-fire")) {
+      const startHash = location.hash;
+      if (startHash === "#blog" || startHash.startsWith("#ga-fire")) {
         const link = [...document.querySelectorAll(".nav-links a")].find(a => a.textContent.trim() === "Blog");
         showPage("blog", link);
+        if (startHash.startsWith("#ga-fire-entry")) openEntry(startHash.slice(1));
       }
     });
+
+    function openEntry(id) {
+      document.getElementById("blogIndex").style.display = "none";
+      document.querySelectorAll(".entry-view").forEach(v => v.classList.remove("active"));
+      const el = document.getElementById(id);
+      if (el) el.classList.add("active");
+      history.replaceState(null, "", "#" + id);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function closeEntry() {
+      const idx = document.getElementById("blogIndex");
+      if (idx) idx.style.display = "block";
+      document.querySelectorAll(".entry-view").forEach(v => v.classList.remove("active"));
+      history.replaceState(null, "", "#blog");
+    }
 
     function closeProject() {
       const grid = document.getElementById("projectGrid");
