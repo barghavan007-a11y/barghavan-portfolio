@@ -539,6 +539,7 @@
     .post code{ font-family: ui-monospace, 'Cascadia Code', Consolas, monospace; font-size: 0.88em; color: var(--text);
       background: rgba(255,255,255,0.06); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; }
     .spec-list{ list-style: none; padding-left: 0 !important; }
+    .post li > ul{ margin-top: 8px; list-style: circle; }
     .entry-list{ display: grid; gap: 12px; }
     .entry-link{ display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: baseline;
       padding: 16px 20px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,0.02);
@@ -934,15 +935,18 @@
         <h3>Changes From Previous Feedback</h3>
         <h4>Feedback</h4>
         <ul>
-          <li>Switch from COP Pyro to DOP Pyro. COP Pyro can't interact with the real trees, so they would never look like they are actually burning.</li>
-          <li>Start with two highly detailed trees instead of the aerial shot of the whole forest, which is too ambitious.</li>
-          <li>"Great! Next focus on the lower portion that has pyro (unless that is trees in the background, which may be), as well as overall smoke layer – it's coming along"</li>
-          <li>"bottom pyro too many (wide) compared to the reference - what are you considering for the overall smoke that is clouding the scene?"</li>
-          <li>"Another layer of overall smoke on the left, try smoke color closer to your reference (or lighting which is what it really is) and focus on the shape of the flame. Then copy some trees on a line with some point jitter to start dressing the scene."</li>
+          <li>Switch from COP Pyro to DOP Pyro, because COP Pyro can't interact with the trees and they would never look like they are really burning.</li>
+          <li>Start with two highly detailed trees instead of the aerial shot, which is too ambitious.</li>
+          <li>Focus on the lower part of the shot where the pyro is, and on an overall smoke layer.</li>
+          <li>The bottom fire is too wide compared to the reference. Think about the overall smoke that clouds the scene.</li>
+          <li>Add another layer of smoke on the left.</li>
+          <li>Make the smoke colour closer to the reference, which is really the lighting from the fire.</li>
+          <li>Focus on the shape of the flames.</li>
+          <li>Copy trees on a line with point jitter to start dressing the scene.</li>
         </ul>
         <h4>Changes made</h4>
         <ul>
-          <li><strong>COP Pyro to DOP Pyro:</strong> rebuilt the fire in the DOP Sparse Pyro solver, so the flames now wrap around the trunks and branches.</li>
+          <li><strong>COP Pyro to DOP Pyro:</strong> rebuilt the fire with the Pyro Solver (sparse DOP pyro), so the flames now wrap around the trunks and branches.</li>
           <li><strong>Two hero trees:</strong> replaced the aerial forest with two detailed pines, and matched the camera, wind and timing to one reference clip.</li>
           <li><strong>Lower pyro:</strong> added a ground fire around the base of the trees, then narrowed it to match the width in the reference.</li>
           <li><strong>Overall smoke:</strong> added a separate smoke sim that covers the whole sky, plus a second smoke source on the left.</li>
@@ -1004,36 +1008,48 @@
             <figcaption>First DOP sim: the crowns burn, but the flames go straight up.</figcaption>
           </figure>
         </div>
-        <p>
-          Both pines are made with VEX, and every part is labelled as trunk, branch, needles or dead twig. That label lets each part
-          burn differently.
-        </p>
+        <ul>
+          <li>Both pines are built in an Attribute Wrangle (VEX): trunk, branches, needle clumps and a few dead twigs.</li>
+          <li>Every polygon gets a <code>kind</code> attribute (trunk, branch, needles or dead twig), so each part can burn differently.</li>
+          <li>All the main settings (tree positions, burn times, wind) live on one <code>CTRL</code> Null node, so I can change things in one place.</li>
+        </ul>
 
         <h4>2. Making the trees burn</h4>
-        <p>The fire spreads over each tree the way it does in a real crown fire:</p>
-        <ol>
-          <li>The ground fire reaches the tree.</li>
-          <li>Flames climb up the trunk.</li>
-          <li>The crown catches all at once ("torching").</li>
-          <li>The needles burn away, and the wood turns black and glows as embers.</li>
-        </ol>
-        <p>
-          The burning parts give off fire into the Pyro Solver. The trunks and branches are also set up as solid objects, so the fire
-          flows around the wood instead of through it.
-        </p>
+        <ul>
+          <li>A primitive wrangle (<code>BURN_TREES</code>) works out when each part of the tree catches fire: first the ground fire reaches the tree, then the flames climb the trunk, then the whole crown catches at once.</li>
+          <li>Each part gets a <code>flame</code>, <code>char</code> and <code>ember</code> value over time. Needles burn for about 12 s, branches for 14 s and the trunk for 16 s.</li>
+          <li>Burnt needles are deleted, so the crown thins out as it burns, and burnt wood turns black.</li>
+          <li>A second wrangle (<code>FIRE_SOURCES</code>) scatters points on the burning parts with <code>density</code>, <code>temperature</code>, <code>flame</code> and <code>v</code> (velocity).</li>
+          <li>Volume Rasterize Attributes turns those points into volumes, which feed the Pyro Solver.</li>
+          <li>The trunks and branches are turned into a collision volume, so the fire flows around the wood instead of through it.</li>
+        </ul>
 
         <h4>3. Matching the wind</h4>
-        <p>
-          I measured how much the flames lean in every frame of the reference and used those numbers as the wind in my sim. The wind
-          runs 4 frames ahead, because a fire takes a moment to react to a gust. I also lowered the flames' upward lift so the wind can
-          push them over. Frame by frame, my flame lean matches the reference closely.
-        </p>
+        <ul>
+          <li><strong>Measuring the reference:</strong> I wrote a small Python script that finds the bright flame pixels in each frame of the reference and measures how far the flame leans sideways from bottom to top. That gives one lean value per frame.</li>
+          <li><strong>Wind curve in Houdini:</strong> I turned the lean values into a wind speed and keyed them onto a <code>wind_speed</code> channel on the <code>CTRL</code> node, one key per frame. That curve is the wind for the whole shot.</li>
+          <li><strong>Pyro Solver wind:</strong> the Wind Strength parameter on the Pyro Solver reads that curve with the expression <code>chf("../CTRL/wind_speed", $F + 4) * 4.0</code>.
+            <ul>
+              <li><code>$F + 4</code> reads the wind 4 frames early, because a fire takes a moment to react to a gust.</li>
+              <li><code>* 4.0</code> scales it up so the lean in the sim matches the reference.</li>
+            </ul>
+          </li>
+          <li><strong>Source velocity:</strong> the fire source points also get a sideways velocity from <code>wind_speed</code>, so the flames lean right from where they start, not only higher up.</li>
+          <li><strong>Buoyancy:</strong> I lowered Buoyancy Lift to <code>0.7</code> so the wind can push the flames over instead of them shooting straight up.</li>
+          <li><strong>Checking it:</strong> I measured the flame lean in my flipbook the same way and compared it to the reference frame by frame. The two curves line up closely.</li>
+          <li>The same <code>wind_speed</code> curve also drives the tree motion, the smoke layer and the drift of the ground fire, so everything moves with one wind.</li>
+        </ul>
 
         <h4>4. Moving the trees with the wind</h4>
-        <p>
-          My first version of the trees just shook randomly. I rebuilt it so the wind pushes them: the trees lean further when the wind
-          is stronger, gusts roll through from one side, and the tops bend more than the bottoms.
-        </p>
+        <ul>
+          <li>My first version just made the trees shake randomly, which looked wrong.</li>
+          <li>I rebuilt it in a point wrangle (<code>TREE_SWAY</code>) that reads the same <code>wind_speed</code> channel.</li>
+          <li><strong>Lean:</strong> the trees lean further when the wind is stronger (lean grows with wind speed squared).</li>
+          <li><strong>Gusts:</strong> a noise pattern moves through the scene at 3 m/s in the wind direction, so gusts roll from one tree to the next instead of hitting both at once.</li>
+          <li><strong>Bend:</strong> the bend is multiplied by height squared, so the base stays planted and the top moves the most.</li>
+          <li><strong>Detail:</strong> branches get an extra push from local gusts, and the needles get a tiny rustle.</li>
+          <li>The lean, sway and flutter amounts are sliders on the <code>CTRL</code> node.</li>
+        </ul>
 
         <h4>5. Ground fire</h4>
         <div class="post-pair">
@@ -1046,49 +1062,73 @@
             <figcaption>After the feedback: kept to the area around the two trees.</figcaption>
           </figure>
         </div>
+        <ul>
+          <li>A wrangle on a ground grid (<code>GROUND_FIRE</code>) adds a band of fire around the base of the trees.</li>
+          <li>Noise breaks the band into patches, and the noise drifts with the wind so the patches move.</li>
+          <li>The first pass was much too wide. I limited it to about 15 m across, around the two trees, to match the reference.</li>
+          <li>The ground fire runs hotter and lifts harder than the first version, so it stands up like the base fire in the clip.</li>
+        </ul>
 
         <h4>6. Overall smoke, smoke on the left and smoke colour</h4>
         <figure>
           <img src="blog/day02/05_smoke_layer.jpg" alt="Grey smoke layer behind the hero fire">
           <figcaption>The first smoke layer, still grey, before the colour change.</figcaption>
         </figure>
-        <p>
-          The main fire sim only covers the two trees, so I made a second, low-detail smoke sim for the haze over the whole scene. It starts
-          before frame 1, so the smoke is already in the air when the shot begins. A second source on the left starts off screen and higher up,
-          and the wind carries it into the frame.
-        </p>
-        <p>
-          For the colour, the smoke in the reference is really grey smoke lit orange by the fire below it. For now I set an orange smoke colour
-          with warm brown shadows. In the final render I want to do it properly by lighting the smoke with the fire.
-        </p>
+        <ul>
+          <li>The main fire sim only covers the two trees, so the haze over the whole scene is a second Pyro Solver with bigger voxels (<code>0.3 m</code>), which keeps it light.</li>
+          <li>It starts at frame <code>-95</code>, so the smoke is already in the air when the shot begins.</li>
+          <li>It has three sources, merged together:
+            <ul>
+              <li>a wide band of soft smoke behind the trees,</li>
+              <li>a second source on the left that starts off screen and higher up, which the wind carries into the frame,</li>
+              <li>some of the smoke coming off the hero fire.</li>
+            </ul>
+          </li>
+          <li>Dissipation is very low, so the smoke builds into a haze instead of separate puffs.</li>
+          <li><strong>Colour:</strong> on both Pyro Solvers I set the smoke colour to a fire-lit orange and the shadow colour to a warm brown, instead of grey and black.</li>
+          <li>The smoke in the reference is really grey smoke lit by the fire, so in the final render I want to light it with the fire instead.</li>
+        </ul>
 
         <h4>7. Flame shape</h4>
-        <p>
-          The flames were big round blobs that kept the same shape. I made the fire come out in bursts, by adding moving noise to where it
-          starts, and made the flames shorter-lived so the tips break off. Now the flames lick up in separate tongues and change shape every frame.
-        </p>
         <figure>
           <img src="blog/day03/02_flicker_iteration.jpg" alt="Flames in separate tongues after the flame shape changes">
           <figcaption>Flame shape after the changes.</figcaption>
         </figure>
+        <ul>
+          <li>The flames were big round blobs that kept the same shape all the time.</li>
+          <li>I added a wrangle (<code>SOURCE_FLICKER</code>) that runs moving noise through the fire sources, so the fire comes out in bursts instead of a steady stream.</li>
+          <li>On the Pyro Solver:
+            <ul>
+              <li>Flame Lifespan down to <code>0.7</code>, so the tips break off.</li>
+              <li>Disturbance and Shredding block size up to <code>0.45</code>, for bigger break-up shapes.</li>
+              <li>Turbulence swirl size up to <code>2.5</code>, for larger rolling curls.</li>
+            </ul>
+          </li>
+          <li>The flames now lick up in separate tongues and change shape every frame.</li>
+        </ul>
 
         <h4>8. Trees on a line with point jitter</h4>
-        <ol>
-          <li>Took one of the hero trees and made it very dark, so it reads as a silhouette against the fire.</li>
-          <li>Made three rows of points behind the hero trees, with each row further back.</li>
-          <li>Moved each point a little at random (point jitter), so it doesn't look like a fence.</li>
-          <li>Gave each copy a slightly different size and rotation, then copied the tree onto every point. That makes 98 trees.</li>
-        </ol>
+        <ul>
+          <li>Blast keeps just one hero tree, and a wrangle moves it to the origin.</li>
+          <li>A wrangle gives it a near-black colour, so it reads as a silhouette against the fire.</li>
+          <li>Another wrangle (<code>TREE_LINE_PTS</code>) makes three rows of points behind the hero trees, each row further back.</li>
+          <li>Each point is moved a little at random along the row and in depth (point jitter), so it doesn't look like a fence.</li>
+          <li>Each point gets a random size (<code>pscale</code> 0.85 to 1.15) and a random rotation (<code>orient</code>).</li>
+          <li>No points within 3.5 m of the hero trees.</li>
+          <li>Copy to Points puts the tree on every point as a packed copy, which keeps the viewport fast. That makes 98 trees.</li>
+        </ul>
 
         <h4>9. Camera and layout</h4>
         <figure>
           <img src="blog/day03/01_layout_camera_match.jpg" alt="Camera and layout matched to the reference">
           <figcaption>Camera matched: long lens, ground line about two thirds down, fire just right of centre.</figcaption>
         </figure>
-        <p>
-          The reference is filmed from far away with a long lens, which squashes the trees together. I moved my camera far back (about 170 m),
-          put it at eye height and switched to an 85 mm lens. The ground line and the fire now sit in the same place as the reference.
-        </p>
+        <ul>
+          <li>The reference is filmed from far away with a long lens, which squashes the trees together.</li>
+          <li>I moved the camera about 170 m back at eye height (1.8 m) and set the focal length to 85 mm.</li>
+          <li>I kept the small tilt and pan I measured from the reference as keyframes on the camera.</li>
+          <li>The ground line now sits about two thirds of the way down, with the fire just right of centre, like the reference.</li>
+        </ul>
 
         <h3>To Do</h3>
         <ol>
