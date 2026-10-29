@@ -1025,6 +1025,14 @@
         </ul>
 
         <h4>3. Matching the wind</h4>
+        <figure>
+          <img src="blog/day03/w1_lean_measure.jpg" alt="Reference frame with the flame pixels highlighted and the measured lean line">
+          <figcaption>Measuring the reference: the script finds the bright flame pixels (pink), takes the centre of each row (dots) and fits a line through them (green). The angle of that line is the flame lean for that frame.</figcaption>
+        </figure>
+        <figure>
+          <img src="blog/day03/w2_lean_curve.png" alt="Graph of the flame lean in the reference over time">
+          <figcaption>The lean for every frame of the reference. This curve was keyed onto the <code>wind_speed</code> channel, so the wind gusts and calms down at the same moments as the clip.</figcaption>
+        </figure>
         <ul>
           <li><strong>Measuring the reference:</strong> I wrote a small Python script that finds the bright flame pixels in each frame of the reference and measures how far the flame leans sideways from bottom to top. That gives one lean value per frame.</li>
           <li><strong>Wind curve in Houdini:</strong> I turned the lean values into a wind speed and keyed them onto a <code>wind_speed</code> channel on the <code>CTRL</code> node, one key per frame. That curve is the wind for the whole shot.</li>
@@ -1039,6 +1047,10 @@
           <li><strong>Checking it:</strong> I measured the flame lean in my flipbook the same way and compared it to the reference frame by frame. The two curves line up closely.</li>
           <li>The same <code>wind_speed</code> curve also drives the tree motion, the smoke layer and the drift of the ground fire, so everything moves with one wind.</li>
         </ul>
+        <figure>
+          <img src="blog/day03/w3_lean_compare.png" alt="Graph comparing the flame lean in the reference and in my sim">
+          <figcaption>Checking it: flame lean in the reference (blue) and in my sim (orange), measured the same way. The two curves rise and fall together.</figcaption>
+        </figure>
 
         <h4>4. Moving the trees with the wind</h4>
         <ul>
