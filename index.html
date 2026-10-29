@@ -727,19 +727,24 @@
           <p class="post-sub">Forest Fire Simulation Technical Summary</p>
 
           <figure>
-            <img src="blog/day01/03_cop_pyro_f072.jpg" alt="COP Pyro fire line and torching trees in the procedural pine forest">
+            <img src="blog/day03/03_final_v025.jpg" alt="Two hero pines torching in front of a dark forest edge under orange smoke">
           </figure>
 
           <h3>Summary</h3>
           <p>
-            A slow drone shot over a pine plantation in south Georgia while a forest fire burns through it. The fire line
-            creeps through the trees toward a dirt road, a few trees catch fire up into the crown, and smoke builds behind it.
-            The forest is fully procedural and all of the fire is simulated in Copernicus Pyro (COP Pyro), the GPU pyro solver in Houdini 22.
+            A ground-level shot of a south Georgia pine stand burning, matched to CBS Mornings news footage of the spring 2026 fires.
+            Two detailed hero pines catch fire from the ground up and torch into the crown while the wind pushes the flames and bends
+            the trees. A low ground fire burns around their base, a forest edge fills the frame behind them, and a layer of smoke
+            hangs over the whole scene. The camera, wind and timing are all matched to the reference clip.
+          </p>
+          <p>
+            The project started as an aerial shot with Copernicus Pyro (Entry 1). After feedback I switched to DOP pyro, so the fire
+            can interact with the real tree geometry, and to a closer shot built around two hero trees (Entries 2 and 3).
           </p>
           <ul class="spec-list">
-            <li><strong>Software:</strong> Houdini 22 (SOPs, VEX, Copernicus Pyro), Nuke</li>
-            <li><strong>Shot:</strong> 5 to 10 seconds, 1920 × 1080, 24 fps</li>
-            <li><strong>Main effects:</strong> ground fire line, torching crowns, smoke column, embers</li>
+            <li><strong>Software:</strong> Houdini 22 (SOPs, VEX, Sparse Pyro Solver), Nuke</li>
+            <li><strong>Shot:</strong> about 5.3 seconds at 29.97 fps to match the reference, 1920 × 1080</li>
+            <li><strong>Main effects:</strong> torching crowns, trunk and ground fire, wind-driven tree motion, smoke layers, forest edge</li>
           </ul>
 
           <h3>Detail Blogs</h3>
@@ -748,6 +753,16 @@
               <span class="entry-num">Entry 1</span>
               <span class="entry-title">Procedural forest, fire front and first COP Pyro sim</span>
               <span class="entry-date">Oct 27, 2026</span>
+            </a>
+            <a class="entry-link" href="#ga-fire-entry2" onclick="openEntry('ga-fire-entry2'); return false;">
+              <span class="entry-num">Entry 2</span>
+              <span class="entry-title">Switch to DOP Pyro: two hero trees matched to the reference</span>
+              <span class="entry-date">Oct 28, 2026</span>
+            </a>
+            <a class="entry-link" href="#ga-fire-entry3" onclick="openEntry('ga-fire-entry3'); return false;">
+              <span class="entry-num">Entry 3</span>
+              <span class="entry-title">Smoke colour, flame shape, forest edge and camera match</span>
+              <span class="entry-date">Oct 29, 2026</span>
             </a>
           </div>
         </article>
@@ -908,6 +923,247 @@
           <li>Burnt bark shader for the trees, then lighting and an EXR render.</li>
         </ol>
 
+      </article>
+
+      <article class="post entry-view" id="ga-fire-entry2">
+        <div class="back" onclick="closeEntry()">← Back to Blog</div>
+        <div class="post-meta">Georgia Wildfire · Entry 2 · Oct 28, 2026</div>
+        <h2>Entry 2 Progress Blog</h2>
+
+        <h3>Goal</h3>
+        <p>
+          Rebuild the shot in DOP pyro around two detailed hero trees, match the camera, wind and timing to one reference clip,
+          then work through feedback on the ground fire and the smoke.
+        </p>
+
+        <figure>
+          <video src="blog/day02/ga_fire_side_by_side_day02.mp4" poster="blog/day02/flipbook_poster.jpg" controls muted loop playsinline preload="metadata"></video>
+          <figcaption>End of the day: reference on the left, my viewport flipbook on the right.</figcaption>
+        </figure>
+
+        <h3>Change of Direction</h3>
+        <p>
+          After Entry 1 I got two notes. First, COP Pyro can't interact with real tree geometry, so the trees would never look like
+          they are actually burning. Second, an aerial shot of a whole plantation is too ambitious for the time I have. So I switched
+          to the DOP Sparse Pyro solver and started again with two highly detailed hero trees.
+        </p>
+
+        <h3>Reference</h3>
+        <figure>
+          <img src="blog/day02/00_reference.jpg" alt="CBS Mornings footage of pines torching at ground level">
+          <figcaption>The reference: a 6.74 second cut of CBS Mornings footage at 29.97 fps, shot from the ground across an open field.</figcaption>
+        </figure>
+        <p>The things I want to match from this clip:</p>
+        <ul>
+          <li>Tall, bare trunks with the crowns torching at the top.</li>
+          <li>Flames that lean hard with the wind and change shape every frame.</li>
+          <li>A long, low camera with a slightly compressed look, with the horizon about two thirds of the way down the frame.</li>
+          <li>Orange smoke that covers the whole sky, lit by the fire from below.</li>
+        </ul>
+
+        <h3>Process</h3>
+
+        <h4>Hero trees</h4>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day02/01_hero_trees_first_dop.jpg" alt="First DOP pyro sim on two hero pines">
+            <figcaption>First DOP sim: the crowns torch, but the flames go straight up and the ground fire is a thin line.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day02/02_trees_only.jpg" alt="The two hero pines without fire">
+            <figcaption>The two hero pines on their own.</figcaption>
+          </figure>
+        </div>
+        <ul>
+          <li>Both pines are built in one VEX wrangle. Every polygon is tagged with a <code>kind</code>: trunk, branch, needles or dead twig.
+            The two trees have about 140,000 polygons in total, and most of them are needles.</li>
+          <li>A <code>BURN_TREES</code> primitive wrangle works out when each piece catches fire: when the ground fire reaches the tree,
+            then a climb time up the trunk, then a fast crown time. Dead twigs catch first.</li>
+          <li>Each piece gets <code>flame</code>, <code>char</code> and <code>ember</code> values. Needles burn for <code>12 s</code>,
+            branches for <code>14 s</code> and the trunk for <code>16 s</code>. Burnt needles are removed, so the crown thins out as it burns.</li>
+          <li>The burning pieces scatter source points, which are rasterized into <code>density</code>, <code>temperature</code>,
+            <code>flame</code> and <code>v</code> volumes for the Pyro Solver. The trunks and branches are also turned into a collision SDF,
+            so the fire wraps around the wood instead of passing through it.</li>
+        </ul>
+
+        <h4>Matching the wind</h4>
+        <p>
+          I measured how far the flames lean in every frame of the reference and keyed that onto a <code>wind_speed</code> channel on my CTRL node.
+          The solver's wind reads that channel 4 frames ahead (<code>chf("../CTRL/wind_speed", $F + 4) * 4.0</code>), because the fire needs a moment
+          to react to a gust. I lowered buoyancy lift to <code>0.7</code> so the wind can actually bend the flames over. Comparing the flame lean
+          frame by frame, my sim matched the reference with a correlation of about 0.9.
+        </p>
+
+        <h4>Tree motion</h4>
+        <p>
+          The first version of the tree motion just shook: a random wobble that had nothing to do with the wind. I rebuilt it in a
+          <code>TREE_SWAY</code> wrangle so the trees lean the way the wind is pushing:
+        </p>
+        <ul>
+          <li>A steady lean that grows with wind speed squared.</li>
+          <li>Gusts that travel downwind at <code>3 m/s</code>, so the trees lean one after another instead of all together.</li>
+          <li>The bend grows with height squared, so the base stays planted and the crown moves the most.</li>
+          <li>On top of that, a branch push from local gusts and a small needle rustle.</li>
+        </ul>
+
+        <h4>Feedback round 1: the lower fire and the smoke</h4>
+        <p>
+          The first note was to focus on the lower part of the shot, where the pyro sits at ground level, and on an overall smoke layer.
+          I added a ground fire wall around the base of the trees. Noise breaks it into patches, and the patches drift with the wind.
+          It burns hotter and lifts harder than the thin line from the first sim.
+        </p>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day02/03_fire_wall_wide.jpg" alt="Wide ground fire wall under the hero trees">
+            <figcaption>Fire wall, first pass: much stronger, but far too wide.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day02/04_fire_wall_narrow.jpg" alt="Narrower ground fire around the hero trees">
+            <figcaption>After round 2: narrowed to the area around the two trees.</figcaption>
+          </figure>
+        </div>
+
+        <h4>Feedback round 2: too wide</h4>
+        <p>
+          The next note was that the bottom pyro was too wide compared to the reference. I limited the wall to about 15 m across and 7 m deep
+          around the hero trees. My first pass at that cut the fire down too much, so I brought the temperature and lift back up until it
+          stood about as tall as the base fire in the clip.
+        </p>
+
+        <h4>Smoke layer</h4>
+        <figure>
+          <img src="blog/day02/05_smoke_layer.jpg" alt="Grey smoke layer filling the frame behind the hero fire">
+          <figcaption>The separate smoke layer filling the frame (still grey here; the colour came the next day).</figcaption>
+        </figure>
+        <p>
+          The hero sim only covers the two trees, so the smoke that clouds the whole scene is a second, low-resolution pyro sim at
+          <code>0.3 m</code> voxels. It starts at frame <code>-95</code>, so the smoke is already hanging in the air on frame 1. It is fed by a
+          wide band of soft sources behind the trees and by the smoke coming off the hero fire. Dissipation is very low (<code>0.01</code>),
+          so it builds into a haze instead of separate puffs.
+        </p>
+
+        <h4>Problems</h4>
+        <ul>
+          <li><strong>Flames frozen for the first 3.5 seconds:</strong> the sim was playing back an old cache after I changed things upstream.
+            Pressing Resimulate on the solver fixed it, and I now do that after every change.</li>
+          <li><strong>Trees shaking instead of bending:</strong> fixed with the wind-driven motion above.</li>
+        </ul>
+
+        <h3>To Do</h3>
+        <ol>
+          <li>Smoke colour closer to the reference.</li>
+          <li>Smoke on the left side of the frame.</li>
+          <li>Better flame shape.</li>
+          <li>Dress the scene with more trees and match the camera framing.</li>
+        </ol>
+      </article>
+
+      <article class="post entry-view" id="ga-fire-entry3">
+        <div class="back" onclick="closeEntry()">← Back to Blog</div>
+        <div class="post-meta">Georgia Wildfire · Entry 3 · Oct 29, 2026</div>
+        <h2>Entry 3 Progress Blog</h2>
+
+        <h3>Goal</h3>
+        <p>
+          Work through the next round of feedback: another smoke layer on the left, smoke colour closer to the reference, flame shape,
+          and copying trees along a line with point jitter to start dressing the scene. Then match the camera and layout to the clip.
+        </p>
+
+        <figure>
+          <video src="blog/day03/ga_fire_side_by_side_day03.mp4" poster="blog/day03/flipbook_poster.jpg" controls muted loop playsinline preload="metadata"></video>
+          <figcaption>Where it stands today: reference on the left, viewport flipbook on the right, 160 frames.</figcaption>
+        </figure>
+
+        <h3>Process</h3>
+
+        <h4>Second smoke layer on the left</h4>
+        <p>
+          I added a second set of sources to the smoke sim on the left of frame. It starts off screen and higher up than the first band,
+          and the wind carries it across the frame. My first pass left the top left corner empty, so I extended it up to about 38 m.
+          Later I thinned it out (density <code>0.12</code>, dissipation <code>0.03</code>) because it was piling up too thick.
+        </p>
+
+        <h4>Smoke colour</h4>
+        <p>
+          In the reference the smoke isn't really orange. It is grey smoke lit by the fire underneath it. For now I'm faking that in the
+          viewport with a fire-lit smoke colour <code>(0.85, 0.42, 0.16)</code> and a warm brown shadow colour instead of a dark one, on both
+          smoke sims. The proper version will be lighting from the fire in the final render.
+        </p>
+
+        <h4>Flame shape</h4>
+        <p>
+          I wanted separate, licking tongues instead of big round blobs on the crowns. I made the crown sources sparser, made the
+          flames rise faster, and made the break-up noise larger so the tongues split apart and the tips detach.
+        </p>
+
+        <h4>Tree line</h4>
+        <p>
+          For the forest edge I took one hero tree, moved it to the origin, gave it a near-black colour so it reads as a silhouette against
+          the fire, and copied it onto points with Copy to Points (packed, to keep the viewport light):
+        </p>
+        <ul>
+          <li>3 staggered rows, with trees 3.6 to 4.8 m apart and each row further back than the last.</li>
+          <li>Random jitter along the row and in depth, so it reads as a forest edge rather than a fence.</li>
+          <li>Size between 85% and 115% and a random rotation around Y for each tree.</li>
+          <li>No trees within 3.5 m of the hero trees. 98 trees in total.</li>
+        </ul>
+
+        <h4>Camera and layout</h4>
+        <figure>
+          <img src="blog/day03/01_layout_camera_match.jpg" alt="Camera and layout matched to the reference">
+          <figcaption>Camera and layout matched: long lens, horizon about two thirds down, hero fire just right of centre.</figcaption>
+        </figure>
+        <p>
+          The reference is shot from far away on a long lens, which flattens the tree line. I moved the camera back to about 170 m at eye
+          height (<code>1.8 m</code>) with an <code>85 mm</code> lens, looking slightly up. I re-based the camera's rotation keys so it keeps
+          the small tilt and pan I measured from the clip. The horizon now sits about two thirds of the way down and the burning trees are
+          just right of centre, like the reference.
+        </p>
+
+        <h4>The fire looked frozen</h4>
+        <p>
+          With the new camera the sim was technically moving, but the flames held one shape the whole time. The sources were giving off
+          the same amount of fire in the same places every frame, so the fire settled into a steady state. I added a
+          <code>SOURCE_FLICKER</code> wrangle that runs noise up through the flames and downwind. That makes the fire come out in bursts,
+          and each burst gets an extra upward kick. On the solver I shortened the flame lifespan to <code>0.7</code>, enlarged the
+          disturbance and shredding blocks to <code>0.45</code> and the swirl size to <code>2.5</code>, and raised turbulence. Each frame now
+          changes about 40% more than before, and the flames surge and lick like the clip.
+        </p>
+        <figure>
+          <img src="blog/day03/02_flicker_iteration.jpg" alt="Flames surging after adding source flicker">
+          <figcaption>After the flicker pass.</figcaption>
+        </figure>
+
+        <h4>Viewport artifacts</h4>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day03/04_artifacts_before.jpg" alt="Flipbook with a black patch top left and pale trunks">
+            <figcaption>Before: a black patch top left and pale white trunks.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day03/05_artifacts_after.jpg" alt="Clean flipbook after the fixes">
+            <figcaption>After the fixes.</figcaption>
+          </figure>
+        </div>
+        <p>
+          The flipbook had three artifacts. None of them came from the sim; they all came from how the viewport draws the scene:
+        </p>
+        <ul>
+          <li><strong>Black patch top left:</strong> the smoke thinned out there and the black viewport background showed through.
+            I gave the camera a background plate in the haze colour, so a thin spot now reads as sky.</li>
+          <li><strong>Pale trunks:</strong> the fire was lighting the hero trunks in the viewport and blowing them out to white.
+            A black, non-reflective material on the trunks keeps them as dark silhouettes.</li>
+          <li><strong>Thin lines across the sky:</strong> the viewport was in Smooth Wire mode. Plain Smooth shading removed them.</li>
+        </ul>
+
+        <h3>To Do</h3>
+        <ol>
+          <li>Fire along the background tree line and a glow along the ground, like the reference.</li>
+          <li>Closer tree spacing and a mix of tree shapes, including some shorter, bushier ones.</li>
+          <li>Light the smoke and trees with the fire in the render instead of faking it with smoke colour.</li>
+          <li>Extend the shot to the full length of the reference.</li>
+          <li>Render EXRs and comp in Nuke.</li>
+        </ol>
       </article>
     </div>
   </section>
