@@ -740,11 +740,13 @@
           </p>
           <p>
             The project started as an aerial shot with Copernicus Pyro (Entry 1). After feedback I switched to DOP pyro, so the fire
-            can interact with the real tree geometry, and to a closer shot built around two hero trees (Entry 2).
+            can interact with the real tree geometry, and to a closer shot built around two hero trees (Entry 2). The latest round
+            rebuilt the trees as procedural SOP networks, split the fire into separate pyro DOPs and matched the layout, camera,
+            embers and ground fire to the clip (Entry 3).
           </p>
           <ul class="spec-list">
             <li><strong>Software:</strong> Houdini 22 (SOPs, VEX, Sparse Pyro Solver), Nuke</li>
-            <li><strong>Shot:</strong> about 5.3 seconds at 29.97 fps to match the reference, 1920 × 1080</li>
+            <li><strong>Shot:</strong> 160 frames at 24 fps (6.7 seconds) to match the reference, 1920 × 1080</li>
             <li><strong>Main effects:</strong> torching crowns, trunk and ground fire, wind-driven tree motion, smoke layers, forest edge</li>
           </ul>
 
@@ -765,6 +767,11 @@
               <span class="entry-num">Entry 2</span>
               <span class="entry-title">Switch to DOP Pyro, feedback changes and matching the reference</span>
               <span class="entry-date">Oct 29, 2026</span>
+            </a>
+            <a class="entry-link" href="#ga-fire-entry3" onclick="openEntry('ga-fire-entry3'); return false;">
+              <span class="entry-num">Entry 3</span>
+              <span class="entry-title">Procedural trees, separate pyro DOPs, embers, layout and scale check</span>
+              <span class="entry-date">Nov 3, 2026</span>
             </a>
           </div>
         </article>
@@ -1157,6 +1164,239 @@
           <li>Trees packed closer together, with a mix of shapes and some shorter, bushier trees.</li>
           <li>Light the smoke and trees with the fire in the render.</li>
           <li>Match the full length of the reference.</li>
+          <li>Render and composite in Nuke.</li>
+        </ol>
+      </article>
+
+      <article class="post entry-view" id="ga-fire-entry3">
+        <div class="back" onclick="closeEntry()">← Back to Blog</div>
+        <div class="post-meta">Georgia Wildfire · Entry 3 · Nov 3, 2026</div>
+        <h2>Entry 3 Progress Blog</h2>
+
+        <h3>Changes From Previous Feedback</h3>
+        <h4>Feedback</h4>
+        <ul>
+          <li>Model the trees procedurally.</li>
+          <li>Make the smoke a bit denser, matching the reference.</li>
+          <li>Lay out the scene and keep the camera angle like the reference.</li>
+          <li>Add embers on a few trees, like in the reference, created in pyro.</li>
+          <li>Use separate pyro DOPs: one for the trees, one for the floor fire and one for the embers.</li>
+          <li>No camera movement: keep it still, with only a slight push-in zoom.</li>
+          <li>Put a Test Tommy next to the trees to check the scale.</li>
+          <li>Apply a texture to the trees, like a grey texture, because right now they read as black.</li>
+        </ul>
+
+        <h4>Changes made</h4>
+        <ul>
+          <li><strong>Procedural trees:</strong> every tree is now a SOP node network.
+            <ul>
+              <li>Before: 1 pine shape used for every tree.</li>
+              <li>Now: 2 hero pines + 5 background variants (3 pines, 1 short bushy pine, 1 round broadleaf tree).</li>
+            </ul>
+          </li>
+          <li><strong>Denser smoke:</strong> smoke amount per source point on the smoke layer.
+            <ul>
+              <li>Background haze: <code>0.3</code> → <code>0.75</code></li>
+              <li>Smoke bank on the left: <code>0.4</code> → <code>0.8</code></li>
+              <li>Smoke fed from the fire: <code>0.3</code> → <code>0.45</code></li>
+              <li>New smoke bank on the right: <code>1.0</code></li>
+              <li>Smoke colour: <code>(0.85, 0.42, 0.16)</code> → <code>(0.78, 0.33, 0.07)</code>, a deeper orange like the clip</li>
+            </ul>
+          </li>
+          <li><strong>Layout:</strong> matched to the reference.
+            <ul>
+              <li>Tree line now ends just right of the main fire (about 75% across), with a smoke bank on the right.</li>
+              <li>Two round dark trees in front, at 18% and 33% across the frame, where they are in the clip.</li>
+              <li>Background trees: 98 → 71, with a slight random lean (±4°) on each trunk.</li>
+              <li>Sky colour sampled from the reference; ground changed from black to dark brown <code>(0.10, 0.045, 0.015)</code>.</li>
+            </ul>
+          </li>
+          <li><strong>Ground fire:</strong> now burns along the whole base of the tree line.
+            <ul>
+              <li>Before: one fire line sweeping away from the camera from one side, on a 40 × 30 m grid.</li>
+              <li>Now: a patchy fire line along the full tree line on a 90 × 30 m grid, creeping toward the camera at 0.12 m/s.</li>
+              <li>New fire wall between the trunks around the main fire (46–71% across the frame), set behind the front trunks so they stay dark.</li>
+              <li>Floor-fire sim box: max size 10 m → 120 × 40 × 40 m.</li>
+            </ul>
+          </li>
+          <li><strong>Embers in pyro:</strong> only on the trees where they are in the clip.
+            <ul>
+              <li>Before: no embers.</li>
+              <li>Now: glowing spots on trunks in 4 bands across the frame. Most are next to the main fire (4–6 spots per trunk); elsewhere 1–3; the right side has none.</li>
+              <li>Each spot has thin fire sources climbing the bark, simulated in their own Pyro Solver.</li>
+            </ul>
+          </li>
+          <li><strong>Separate pyro DOPs:</strong>
+            <ul>
+              <li>Before: 1 Pyro Solver for all the fire.</li>
+              <li>Now: <code>PYRO_TREES_DOP</code>, <code>PYRO_GROUND_DOP</code> and <code>PYRO_EMBERS_DOP</code>, plus the <code>SMOKE_LAYER_DOP</code> for the haze.</li>
+            </ul>
+          </li>
+          <li><strong>Still camera with push-in:</strong>
+            <ul>
+              <li>Before: keyed tilt and pan moves.</li>
+              <li>Now: camera locked; focal length <code>85 mm</code> → <code>91 mm</code> from frame 1 to 160 (about a 7% push-in).</li>
+            </ul>
+          </li>
+          <li><strong>Test Tommy for scale:</strong> 1.78 m Tommy at the base of the trees; the pines are 22–25 m, about 13 times taller.</li>
+          <li><strong>Grey texture:</strong>
+            <ul>
+              <li>Before: near-black trees (colour <code>0.035</code>).</li>
+              <li>Now: grey bark texture on trunks and branches, darker grey-green crowns (<code>0.14</code>); trees still char darker as they burn.</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h3>Reference</h3>
+        <figure>
+          <video src="blog/ref/ga_fire_reference.mp4" poster="blog/ref/reference_poster.jpg" controls muted loop playsinline preload="metadata"></video>
+          <figcaption>Reference: CBS Mornings news footage of the Georgia fires.</figcaption>
+        </figure>
+
+        <h3>Progress</h3>
+        <figure>
+          <video src="blog/day04/ga_fire_side_by_side_day04.mp4" poster="blog/day04/flipbook_poster.jpg" controls muted loop playsinline preload="metadata"></video>
+          <figcaption>Reference on the left, viewport flipbook on the right (160 frames at 24 fps).</figcaption>
+        </figure>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day04/01_before_v030.jpg" alt="Previous version: one tree shape, black trees, fire on one side">
+            <figcaption>Before: one tree shape, black trees, ground fire on one side only.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day04/02_now_v036.jpg" alt="Current version: varied grey trees, fire wall and ground fire along the tree line">
+            <figcaption>Now: varied grey trees, fire wall between the trunks, ground fire along the tree line.</figcaption>
+          </figure>
+        </div>
+
+        <h3>Test Tommy Scale Check</h3>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day04/05_test_tommy_close.jpg" alt="Test Tommy in cyan next to the trees, seen from a close check camera">
+            <figcaption>Close check camera, 45 m away: Tommy (cyan, 1.78 m) next to the tree bases.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day04/06_test_tommy_shotcam.jpg" alt="Test Tommy seen through the shot camera">
+            <figcaption>Through the shot camera, 170 m away: Tommy is about 20 px tall, which is why the trees read so large.</figcaption>
+          </figure>
+        </div>
+
+        <h3>Process</h3>
+
+        <h4>1. Procedural trees</h4>
+        <figure>
+          <img src="blog/day04/04_trees_grey_texture.jpg" alt="The tree variants with grey bark texture, without fire">
+          <figcaption>Tree variants without fire: tall pines, short bushy pines and round broadleaf trees.</figcaption>
+        </figure>
+        <ul>
+          <li><strong>Trunk:</strong> Line → Attribute Noise (wobble) → Resample → Sweep (tube that tapers to the top).</li>
+          <li><strong>Branches:</strong> Line → Attribute Noise (kinks) → Resample → Sweep.</li>
+          <li><strong>Needle clusters:</strong> Tube (one needle) → Copy to Points on a Sphere → clusters spread along each branch with Carve, Resample, Attribute Randomize (orient, pscale) and Copy to Points.</li>
+          <li><strong>Whorls:</strong> Copy and Transform turns one branch into a ring of branches; Carve picks the crown zone on the trunk, Resample sets the number of whorls, and Attribute Remap makes them shorter near the top.</li>
+          <li><strong>Dead stubs:</strong> short swept lines copied onto the lower trunk.</li>
+          <li><strong>Burn tags:</strong> Attribute Create gives every part a <code>kind</code> (trunk, branch, needles, dead twig), so each part burns for a different time.</li>
+          <li>All the main sizes (height, trunk radius, crown length, whorls, branches, needle length) are sliders on the <code>CTRL</code> node.</li>
+        </ul>
+
+        <h4>2. Tree variants</h4>
+        <ul>
+          <li>Each variant is a copy of the tree network with its own values:
+            <ul>
+              <li>Hero pines: crown <code>32%</code> of the height, <code>16</code> whorls, branches <code>2.6 m</code>, heights <code>22 m</code> and <code>25 m</code>.</li>
+              <li>Pine A: crown <code>60%</code>, <code>11</code> whorls, <code>22 m</code>.</li>
+              <li>Pine B: crown <code>70%</code>, <code>8</code> whorls, short <code>1.8 m</code> branches.</li>
+              <li>Pine C: crown <code>50%</code>, <code>9</code> whorls, long <code>3.1 m</code> branches, <code>20 m</code>.</li>
+              <li>Bushy pine: <code>10 m</code>, along the front edge only.</li>
+              <li>Round tree: <code>6.5 m</code> trunk, crown from 4 overlapping spheres scattered with 900 small leaf clumps (Sphere → Scatter → Copy to Points).</li>
+            </ul>
+          </li>
+          <li>Attribute Create tags each variant with a <code>variant</code> number; Copy to Points (piece attribute <code>variant</code>) puts the right tree on each point.</li>
+        </ul>
+
+        <h4>3. Grey texture</h4>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day04/07_bark_texture.jpg" alt="The grey bark texture image">
+            <figcaption>The grey bark texture.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day04/09_embers_crop.jpg" alt="Grey textured trunks and round trees with glowing embers">
+            <figcaption>Textured trunks, round trees and embers in the flipbook.</figcaption>
+          </figure>
+        </div>
+        <ul>
+          <li>Turned on UVs on every Sweep (trunks, branches, stubs).</li>
+          <li>Attribute from Map reads the bark image through those UVs and bakes it onto the trunk as colour.</li>
+          <li>Attribute Promote moves that colour onto the polygons, so it doesn't override the crown colour.</li>
+          <li>Color nodes set the bark grey and the darker grey-green crowns on every variant.</li>
+          <li>One matte material that uses the geometry colour, so the viewport flipbook shows it reliably.</li>
+        </ul>
+
+        <h4>4. Separate pyro DOPs</h4>
+        <ul>
+          <li>The fire source points get a <code>src</code> attribute: 0 for tree fire, 1 for floor fire.</li>
+          <li>Two Blast nodes split them: <code>TREE_FIRE_POINTS</code> and <code>GROUND_FIRE_POINTS</code>.</li>
+          <li>Each set goes through Volume Rasterize Attributes into its own Pyro Solver:
+            <ul>
+              <li><code>PYRO_TREES_DOP</code>: voxel <code>0.08 m</code>, starts at frame <code>-47</code>, collides with the trunks.</li>
+              <li><code>PYRO_GROUND_DOP</code>: voxel <code>0.08</code> → <code>0.12 m</code> for the wider area, flame lifespan <code>0.7</code> → <code>0.6</code>, buoyancy <code>0.85</code> → <code>0.8</code>.</li>
+              <li><code>PYRO_EMBERS_DOP</code>: voxel <code>0.04 m</code> for small tongues, starts at frame <code>-60</code>, flame lifespan <code>0.6</code>, buoyancy <code>1.2</code>, dissipation <code>0.2</code>, wind <code>× 1.2</code>.</li>
+              <li><code>SMOKE_LAYER_DOP</code>: voxel <code>0.3 m</code>, starts at frame <code>-95</code>.</li>
+            </ul>
+          </li>
+          <li>A Merge (<code>PYRO_MERGE</code>) puts the three fires back together for display.</li>
+          <li>All of them read the same <code>wind_speed</code> channel, so they lean together.</li>
+        </ul>
+
+        <h4>5. Ground fire and fire wall</h4>
+        <figure>
+          <img src="blog/day04/03_ground_fire_line.jpg" alt="Ground fire along the base of the tree line and the fire wall between the trunks">
+          <figcaption>Fire line along the base of the trees and the fire wall around the main fire.</figcaption>
+        </figure>
+        <ul>
+          <li>Ground grid widened from 40 m to 90 m, so it covers both frame edges.</li>
+          <li>Fire line: a ragged strip about 4 m deep at the front of the tree line; noise breaks it into patches that drift with the wind.</li>
+          <li>Right side burns at 35% strength, because the clip is mostly smoke there.</li>
+          <li>Fire wall: extra source points between the trunks around the main fire, up to about 8 m high, brightest near the ground.</li>
+          <li>First try was too strong (about 24 m tall, hiding the hero trees). I halved the height and heat and moved it behind the front trunks.</li>
+          <li>Floor fire flickers patch by patch, separately from the hero crowns.</li>
+        </ul>
+
+        <h4>6. Embers matched to the reference</h4>
+        <ul>
+          <li>Each background tree's position is converted to how far across the frame it sits (0 = left edge, 1 = right edge).</li>
+          <li>Embers only appear in the bands where they are in the clip:
+            <ul>
+              <li>far left (0–18%): 60% of trees</li>
+              <li>left of centre (24–28%): 70%</li>
+              <li>middle (36–42%): 60%</li>
+              <li>around the main fire (46–68%): 80%</li>
+              <li>right side: none</li>
+            </ul>
+          </li>
+          <li>Spots pulse slowly, and each one sources thin flames that lick up the bark in <code>PYRO_EMBERS_DOP</code>.</li>
+        </ul>
+
+        <h4>7. Camera</h4>
+        <ul>
+          <li>Removed all the camera move keys; position stays at about 170 m back and 1.8 m high.</li>
+          <li>Only the focal length is animated: <code>85 mm</code> → <code>91 mm</code>, linear, for a slow push-in.</li>
+        </ul>
+
+        <h4>8. Fixes along the way</h4>
+        <ul>
+          <li><strong>Fire frozen for the first 5 s:</strong> the sims were reset while the timeline sat on a late frame, so the cache dropped the early frames. Now every sim is reset at frame 1, and the cache limit went from <code>5000</code> to <code>12000 MB</code>.</li>
+          <li><strong>Green crowns in the flipbook:</strong> the viewport drew a stray copy of the hero trees when flipbooking from inside the geometry network. Flipbooks now run from object level.</li>
+          <li><strong>Hero crowns:</strong> the left hero tree shared its shape with a background variant; it now has its own copy, so the background changes don't affect it.</li>
+        </ul>
+
+        <h3>To Do</h3>
+        <ol>
+          <li>Apply the feedback and suggestions from the next review.</li>
+          <li>Make the fire wall brighter and wider, closer to the white-hot core in the reference.</li>
+          <li>Make the round trees airier, with gaps in the crown.</li>
+          <li>Make the pine crowns more uneven and clumpy, like the clip.</li>
+          <li>Light the smoke and trees with the fire in a Karma render.</li>
           <li>Render and composite in Nuke.</li>
         </ol>
       </article>
