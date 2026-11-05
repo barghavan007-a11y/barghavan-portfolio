@@ -775,7 +775,7 @@
             </a>
             <a class="entry-link" href="#ga-fire-entry4" onclick="openEntry('ga-fire-entry4'); return false;">
               <span class="entry-num">Entry 4</span>
-              <span class="entry-title">v17 trees with nodes, reference wind, ember flames and colour fixes</span>
+              <span class="entry-title">Pine trees with nodes, reference wind, ember flames and colour fixes</span>
               <span class="entry-date">Nov 5, 2026</span>
             </a>
           </div>
@@ -1462,12 +1462,12 @@
         <h3>Changes From Previous Feedback</h3>
         <h4>Feedback (Nov 4 review)</h4>
         <ul>
-          <li>Bring the trees back to the v17 trees, built with nodes.</li>
-          <li>The fire on the trees is moving too fast; the v17 tree fire was better.</li>
+          <li>Bring back the earlier pine trees, built with nodes.</li>
+          <li>The fire on the trees is moving too fast; the earlier tree fire was better.</li>
           <li>The embers are flickering and do not look right.</li>
           <li>The smoke is good, but there is a red background; remove it.</li>
           <li>The fire on the trees and on the ground should move like the reference, including the wind.</li>
-          <li>The flame looks like too much pyro; go back to the v17 flame and follow the reference.</li>
+          <li>The flame looks like too much pyro; go back to the earlier flame and follow the reference.</li>
           <li>Yellow dots on the trees, and the embers are not sitting on the trees.</li>
           <li>In the centre of the reference, the ground fire is blown upward by the wind; match it frame by frame.</li>
         </ul>
@@ -1482,23 +1482,23 @@
 
         <h4>Changes made</h4>
         <ul>
-          <li><strong>v17 trees, rebuilt with SOP nodes:</strong>
+          <li><strong>Earlier pine trees, rebuilt with SOP nodes:</strong>
             <ul>
               <li>Before: 4 tree variants (pines, bushy pines, round trees), each trunk leaning ±4°.</li>
-              <li>Now: the v17 pine on every tree, built only from nodes in <code>PROC_TREES</code>.</li>
+              <li>Now: the earlier pine on every tree, built only from nodes in <code>PROC_TREES</code>.</li>
               <li>Crown split into 3 bands; branch tilt low / mid / top: <code>18°</code> / <code>0°</code> / <code>−24°</code>.</li>
               <li>Branch length shrinks toward the top: Output Max on <code>WHORL_SIZE</code> = <code>0.28</code>.</li>
               <li>Twigs with needle clusters on every branch (<code>TWIG_DIRECTION</code>, Min <code>(−1, 0.15, 0.3)</code>, Max <code>(1, 0.45, 0.9)</code>).</li>
               <li>Dead branches under the crown: <code>DEAD_LINE</code> length <code>1.4</code>, direction <code>(0, −0.3, 1)</code>.</li>
-              <li>Needle area back to v17: <code>221 m²</code> → <code>105 m²</code>.</li>
+              <li>Needle area back to the earlier amount: <code>221 m²</code> → <code>105 m²</code>.</li>
               <li>Second hero tree: copy of the same network with different seeds.</li>
-              <li>Tree line: 69 trees, all v17 pines, trunks straight (lean <code>±4°</code> → <code>0°</code>).</li>
+              <li>Tree line: 69 trees, all the same pine, trunks straight (lean <code>±4°</code> → <code>0°</code>).</li>
             </ul>
           </li>
-          <li><strong>Tree fire back to v17:</strong>
+          <li><strong>Tree fire back to the earlier version:</strong>
             <ul>
-              <li>Time Scale: slowed test <code>0.25</code> / <code>0.2</code> → <code>1</code> (v17).</li>
-              <li>Flame Lifespan <code>0.7</code>, Buoyancy Scale <code>0.85</code>, v17 flicker timing.</li>
+              <li>Time Scale: slowed test <code>0.25</code> / <code>0.2</code> → <code>1</code> (earlier speed).</li>
+              <li>Flame Lifespan <code>0.7</code>, Buoyancy Scale <code>0.85</code>, earlier flicker timing.</li>
               <li>Extra tall wall sources from the slowed test removed.</li>
             </ul>
           </li>
@@ -1581,7 +1581,7 @@
         </figure>
         <figure>
           <img src="blog/day05/cg_frame_0030.jpg" alt="Flipbook frame 30">
-          <figcaption>Flipbook frame 30: v17 pines along the tree line, ground fire starting.</figcaption>
+          <figcaption>Flipbook frame 30: pines along the tree line, ground fire starting.</figcaption>
         </figure>
         <div class="post-pair">
           <figure>
@@ -1596,7 +1596,7 @@
 
         <h3>Process</h3>
 
-        <h4>1. v17 trees built with nodes</h4>
+        <h4>1. Pine trees built with nodes</h4>
         <div class="post-pair">
           <figure>
             <img src="blog/day05/a_crown_bands_parms.jpg" alt="WHORL_SIZE parameters">
@@ -1609,7 +1609,7 @@
         </div>
         <ul>
           <li>Each crown band has its own whorls, tilt and blast on the trunk height, then they merge into one crown.</li>
-          <li>Bark uses the v17 bark texture, tinted to the v17 bark colour <code>(0.17, 0.11, 0.07)</code>.</li>
+          <li>Bark uses the bark texture, tinted to the bark colour <code>(0.17, 0.11, 0.07)</code>.</li>
         </ul>
         <div class="post-pair">
           <figure>
@@ -1632,11 +1632,11 @@
           </figure>
         </div>
 
-        <h4>2. Tree fire back to v17</h4>
+        <h4>2. Tree fire back to the earlier version</h4>
         <div class="post-pair">
           <figure>
             <img src="blog/day05/k_trees_dop.jpg" alt="PYRO_TREES_DOP flame lifespan">
-            <figcaption>Shows <code>PYRO_TREES_DOP</code> Flame Lifespan 0.7, the v17 value.</figcaption>
+            <figcaption>Shows <code>PYRO_TREES_DOP</code> Flame Lifespan 0.7, the earlier value.</figcaption>
           </figure>
           <figure>
             <img src="blog/day05/s1_trees_shape.jpg" alt="PYRO_TREES_DOP buoyancy and wind">
@@ -1644,8 +1644,8 @@
           </figure>
         </div>
         <ul>
-          <li>Time Scale back to 1, so the flame moves at the v17 speed.</li>
-          <li>Tree sources flicker with the v17 timing.</li>
+          <li>Time Scale back to 1, so the flame moves at the earlier speed.</li>
+          <li>Tree sources flicker with the earlier timing.</li>
         </ul>
 
         <h4>3. Wind and surge from the reference</h4>
