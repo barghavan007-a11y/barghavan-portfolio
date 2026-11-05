@@ -1474,15 +1474,62 @@
 
         <h3>Changes Made</h3>
         <ul>
-          <li><strong>Trees:</strong> earlier pine rebuilt with SOP nodes on all 69 trees; lean <code>±4°</code> → <code>0°</code>.</li>
-          <li><strong>Tree fire:</strong> Time Scale <code>0.2</code> → <code>1</code>, Flame Lifespan <code>0.7</code>, Buoyancy <code>0.85</code>.</li>
-          <li><strong>Wind:</strong> Fire Wind channel keyed from the reference; trees × <code>4.0</code>, ground × <code>1.2</code>, embers × <code>0.5</code>.</li>
-          <li><strong>Red background:</strong> camera Background Image removed.</li>
-          <li><strong>Ground fire:</strong> Ground Surge channel drives a fire wall up to <code>10 m</code>; wind × <code>3.5</code> → × <code>1.2</code>; Buoyancy <code>1.0</code> → <code>1.3</code>; Max Substeps <code>1</code> → <code>2</code> (removed stripes).</li>
-          <li><strong>Embers:</strong> glow spheres removed, spots on the bark; Flame Lifespan <code>0.3</code> → <code>0.6</code>; Buoyancy <code>0.5</code> → <code>0.8</code>; Max Substeps <code>1</code> → <code>2</code>; Voxel Size <code>0.06</code> → <code>0.05</code>.</li>
-          <li><strong>Tree colour:</strong> needles <code>(0.09, 0.18, 0.06)</code> → <code>(0.10, 0.12, 0.093)</code>; shader Base Color <code>0.7</code>.</li>
-          <li><strong>Blown-out pyro:</strong> Intensity Scale ground <code>25</code> → <code>9</code>, trees <code>25</code> → <code>15</code>.</li>
-          <li><strong>Side flames:</strong> flame amount <code>0.7</code> → <code>0.35</code>.</li>
+          <li><strong>Trees</strong>
+            <ul>
+              <li>Earlier pine rebuilt with SOP nodes and used on all 69 trees.</li>
+              <li>Three crown bands with branches tilting up toward the top, twigs with needle clusters and dead branches under the crown.</li>
+              <li>Trunk lean <code>±4°</code> → <code>0°</code>, so the tree line stands straight like the clip.</li>
+            </ul>
+          </li>
+          <li><strong>Tree fire</strong>
+            <ul>
+              <li>Time Scale <code>0.2</code> → <code>1</code>: back to the earlier speed.</li>
+              <li>Flame Lifespan <code>0.7</code>: how long a flame lasts before it turns to smoke.</li>
+              <li>Buoyancy <code>0.85</code>: how fast the flames rise.</li>
+            </ul>
+          </li>
+          <li><strong>Wind</strong>
+            <ul>
+              <li>Fire Wind channel keyed per frame from the flame drift in the reference.</li>
+              <li>Drives the wind on all three Pyro Solvers (trees × <code>4.0</code>, ground × <code>1.2</code>, embers × <code>0.5</code>), so the fire gusts at the same moments as the clip.</li>
+            </ul>
+          </li>
+          <li><strong>Red background</strong>
+            <ul>
+              <li>Camera Background Image removed; it was the reference plate showing behind the scene.</li>
+            </ul>
+          </li>
+          <li><strong>Ground fire</strong>
+            <ul>
+              <li>Ground Surge channel, measured from the reference centre, drives a fire wall between the trunks that grows up to <code>10 m</code> in gusts.</li>
+              <li>Wind × <code>3.5</code> → × <code>1.2</code>, Buoyancy <code>1.0</code> → <code>1.3</code>: the fire rises instead of sweeping sideways.</li>
+              <li>Max Substeps <code>1</code> → <code>2</code>: the solver steps twice per frame, which removed the stripes in the floor fire.</li>
+            </ul>
+          </li>
+          <li><strong>Embers</strong>
+            <ul>
+              <li>Yellow glow spheres removed; ember spots now sit on the bark.</li>
+              <li>Flame Lifespan <code>0.3</code> → <code>0.6</code>, Buoyancy <code>0.5</code> → <code>0.8</code>: bigger, steady flames instead of blinking dots.</li>
+              <li>Max Substeps <code>1</code> → <code>2</code>, Voxel Size <code>0.06</code> → <code>0.05</code>: smoother, more detailed small flames.</li>
+            </ul>
+          </li>
+          <li><strong>Tree colour</strong>
+            <ul>
+              <li>Needles <code>(0.09, 0.18, 0.06)</code> → <code>(0.10, 0.12, 0.093)</code>: less saturated green.</li>
+              <li>Shader Base Color <code>0.7</code>: trees take 70% of the light.</li>
+            </ul>
+          </li>
+          <li><strong>Blown-out pyro</strong>
+            <ul>
+              <li>Intensity Scale ground <code>25</code> → <code>9</code>, trees <code>25</code> → <code>15</code>: less white, more orange flame.</li>
+              <li>Blown-out area in the midground <code>8.7%</code> → <code>2.3%</code>.</li>
+            </ul>
+          </li>
+          <li><strong>Side flames</strong>
+            <ul>
+              <li>Flame amount <code>0.7</code> → <code>0.35</code> on the fire line left and right of the main fire: lower side flames.</li>
+            </ul>
+          </li>
         </ul>
 
         <h3>Reference</h3>
