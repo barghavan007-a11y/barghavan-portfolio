@@ -1459,106 +1459,30 @@
         <div class="post-meta">Georgia Wildfire · Entry 4 · Nov 5, 2026</div>
         <h2>Entry 4 Progress Blog</h2>
 
-        <h3>Changes From Previous Feedback</h3>
-        <h4>Feedback (Nov 4 review)</h4>
+        <h3>Feedback</h3>
         <ul>
           <li>Bring back the earlier pine trees, built with nodes.</li>
-          <li>The fire on the trees is moving too fast; the earlier tree fire was better.</li>
-          <li>The embers are flickering and do not look right.</li>
-          <li>The smoke is good, but there is a red background; remove it.</li>
-          <li>The fire on the trees and on the ground should move like the reference, including the wind.</li>
-          <li>The flame looks like too much pyro; go back to the earlier flame and follow the reference.</li>
-          <li>Yellow dots on the trees, and the embers are not sitting on the trees.</li>
-          <li>In the centre of the reference, the ground fire is blown upward by the wind; match it frame by frame.</li>
-        </ul>
-        <h4>Feedback (Nov 5 review)</h4>
-        <ul>
-          <li>Desaturate the green of the trees and reduce how much they react to the light.</li>
-          <li>The blown-out parts of the midground pyro are still much larger than in the reference.</li>
-          <li>The flames on the left and right of the main fire are too tall.</li>
-          <li>The embers still flicker; they should move like flames.</li>
+          <li>Tree fire too fast; the earlier one was better.</li>
+          <li>Embers flickering and not sitting on the trees.</li>
+          <li>Remove the red background.</li>
+          <li>Fire on the trees and ground should move with the wind like the reference.</li>
+          <li>Centre ground fire should blow upward like the reference.</li>
+          <li>Desaturate the tree greens and reduce their reaction to light.</li>
+          <li>Blown-out parts of the midground pyro too large.</li>
+          <li>Side flames left and right of the main fire too tall.</li>
         </ul>
 
-        <h4>Changes made</h4>
+        <h3>Changes Made</h3>
         <ul>
-          <li><strong>Earlier pine trees, rebuilt with SOP nodes:</strong>
-            <ul>
-              <li>Before: 4 tree variants (pines, bushy pines, round trees), each trunk leaning ±4°.</li>
-              <li>Now: the earlier pine on every tree, built only from nodes in <code>ProcTrees</code>.</li>
-              <li>Crown split into 3 bands; branch tilt low / mid / top: <code>18°</code> / <code>0°</code> / <code>−24°</code>.</li>
-              <li>Branch length shrinks toward the top: Output Max on <code>WhorlSize</code> = <code>0.28</code>.</li>
-              <li>Twigs with needle clusters on every branch (<code>TwigDirection</code>, Min <code>(−1, 0.15, 0.3)</code>, Max <code>(1, 0.45, 0.9)</code>).</li>
-              <li>Dead branches under the crown: <code>DeadLine</code> length <code>1.4</code>, direction <code>(0, −0.3, 1)</code>.</li>
-              <li>Needle area back to the earlier amount: <code>221 m²</code> → <code>105 m²</code>.</li>
-              <li>Second hero tree: copy of the same network with different seeds.</li>
-              <li>Tree line: 69 trees, all the same pine, trunks straight (lean <code>±4°</code> → <code>0°</code>).</li>
-            </ul>
-          </li>
-          <li><strong>Tree fire back to the earlier version:</strong>
-            <ul>
-              <li>Time Scale: slowed test <code>0.25</code> / <code>0.2</code> → <code>1</code> (earlier speed).</li>
-              <li>Flame Lifespan <code>0.7</code>, Buoyancy Scale <code>0.85</code>, earlier flicker timing.</li>
-              <li>Extra tall wall sources from the slowed test removed.</li>
-            </ul>
-          </li>
-          <li><strong>Wind from the reference:</strong>
-            <ul>
-              <li>New Fire Wind channel on <code>CTRL</code>, keyed on every frame from the flame drift in the reference (1.4–3.3 m/s).</li>
-              <li>All three Pyro Solvers read it: trees × <code>4.0</code>, ground × <code>1.2</code>, embers × <code>0.5</code>.</li>
-              <li>Sideways drift: <code>11.0</code> → <code>4.8 px/s</code> (reference <code>4.4 px/s</code>).</li>
-            </ul>
-          </li>
-          <li><strong>Red background removed:</strong>
-            <ul>
-              <li><code>CamHero</code> Background Image: reference plate → empty.</li>
-              <li>Haze colour: <code>(0.78, 0.33, 0.07)</code> → <code>(0.66, 0.40, 0.02)</code>, orange instead of red.</li>
-            </ul>
-          </li>
-          <li><strong>Ground fire blown upward, like the reference centre:</strong>
-            <ul>
-              <li>New Ground Surge channel (0–1), keyed per frame from how much flame reaches the upper half of the centre in each frame of the clip.</li>
-              <li>It drives a fire wall between the trunks: <code>2200</code> → <code>4800</code> source points and <code>4</code> → <code>10 m</code> tall during gusts, rising at <code>3–8 m/s</code>.</li>
-              <li>Ground wind <code>× 3.5</code> → <code>× 1.2</code>, so it rises instead of sweeping sideways.</li>
-              <li>Buoyancy Scale <code>1.0</code> → <code>1.3</code>.</li>
-              <li>Stripes in the floor fire: substeps <code>1</code> → <code>2</code>, bigger floor sources.</li>
-            </ul>
-          </li>
-          <li><strong>Embers on the bark:</strong>
-            <ul>
-              <li>Yellow dots were separate glow spheres; removed, so the embers are pyro only.</li>
-              <li>Ember spots now snap onto the trunk surface, using the trunk-only copies in <code>EmberTrunks</code>.</li>
-            </ul>
-          </li>
-          <li><strong>Embers move like flames:</strong>
-            <ul>
-              <li>Flame Lifespan <code>0.3</code> → <code>0.6</code>.</li>
-              <li>Buoyancy Scale <code>0.5</code> → <code>0.8</code>.</li>
-              <li>Wind <code>× 0.2</code> → <code>× 0.5</code>, same gusts as the tree fire.</li>
-              <li>Voxel size <code>0.06</code> → <code>0.05</code>, substeps <code>1</code> → <code>2</code>.</li>
-              <li>Disturbance off → <code>0.3</code>, block size <code>0.15</code>.</li>
-              <li>Ember source size <code>0.12</code> → <code>0.18</code>, with a slow breathing instead of on/off.</li>
-            </ul>
-          </li>
-          <li><strong>Tree greens desaturated, less reaction to light:</strong>
-            <ul>
-              <li>Needle colour <code>(0.09, 0.18, 0.06)</code> → <code>(0.10, 0.12, 0.093)</code>.</li>
-              <li><code>TreeMatte</code>: Base Color <code>0.7</code> with Use Point Color on, so trees take 70% of the light; Roughness <code>1</code>, no reflection.</li>
-            </ul>
-          </li>
-          <li><strong>Less blown-out pyro in the midground:</strong>
-            <ul>
-              <li>Ground fire Intensity Scale <code>25</code> → <code>13.75</code> → <code>9</code>.</li>
-              <li>Tree fire Intensity Scale <code>25</code> → <code>18.75</code> → <code>15</code>.</li>
-              <li>Less flame in the core of the fire wall.</li>
-              <li>Blown-out area in the midground: <code>8.7%</code> → <code>4.0%</code> → <code>2.3%</code>.</li>
-            </ul>
-          </li>
-          <li><strong>Lower side flames:</strong>
-            <ul>
-              <li>Flame on the fire line left and right of the main fire halved (<code>0.7</code> → <code>0.35</code>).</li>
-              <li>Heat at the sides <code>0.7</code> → <code>0.4</code>, upward lift <code>0.2</code> → <code>0.08</code>.</li>
-            </ul>
-          </li>
+          <li><strong>Trees:</strong> earlier pine rebuilt with SOP nodes on all 69 trees; lean <code>±4°</code> → <code>0°</code>.</li>
+          <li><strong>Tree fire:</strong> Time Scale <code>0.2</code> → <code>1</code>, Flame Lifespan <code>0.7</code>, Buoyancy <code>0.85</code>.</li>
+          <li><strong>Wind:</strong> Fire Wind channel keyed from the reference; trees × <code>4.0</code>, ground × <code>1.2</code>, embers × <code>0.5</code>.</li>
+          <li><strong>Red background:</strong> camera Background Image removed.</li>
+          <li><strong>Ground fire:</strong> Ground Surge channel drives a fire wall up to <code>10 m</code>; wind × <code>3.5</code> → × <code>1.2</code>; Buoyancy <code>1.0</code> → <code>1.3</code>; Max Substeps <code>1</code> → <code>2</code> (removed stripes).</li>
+          <li><strong>Embers:</strong> glow spheres removed, spots on the bark; Flame Lifespan <code>0.3</code> → <code>0.6</code>; Buoyancy <code>0.5</code> → <code>0.8</code>; Max Substeps <code>1</code> → <code>2</code>; Voxel Size <code>0.06</code> → <code>0.05</code>.</li>
+          <li><strong>Tree colour:</strong> needles <code>(0.09, 0.18, 0.06)</code> → <code>(0.10, 0.12, 0.093)</code>; shader Base Color <code>0.7</code>.</li>
+          <li><strong>Blown-out pyro:</strong> Intensity Scale ground <code>25</code> → <code>9</code>, trees <code>25</code> → <code>15</code>.</li>
+          <li><strong>Side flames:</strong> flame amount <code>0.7</code> → <code>0.35</code>.</li>
         </ul>
 
         <h3>Reference</h3>
@@ -1570,172 +1494,123 @@
         <h3>Progress</h3>
         <figure>
           <video src="blog/day05/ga_fire_side_by_side_day05.mp4" poster="blog/day05/flipbook_poster.jpg" controls muted loop playsinline preload="metadata"></video>
-          <figcaption>Reference on the left, viewport flipbook on the right (160 frames at 24 fps).</figcaption>
-        </figure>
-        <figure>
-          <img src="blog/day05/cg_frame_0030.jpg" alt="Flipbook frame 30">
-          <figcaption>Flipbook frame 30: pines along the tree line, ground fire starting.</figcaption>
+          <figcaption>Reference on the left, flipbook on the right.</figcaption>
         </figure>
         <div class="post-pair">
           <figure>
             <img src="blog/day05/cg_frame_0080.jpg" alt="Flipbook frame 80">
-            <figcaption>Frame 80: main fire rising between the trunks, embers on the bark.</figcaption>
+            <figcaption>Frame 80.</figcaption>
           </figure>
           <figure>
             <img src="blog/day05/cg_frame_0130.jpg" alt="Flipbook frame 130">
-            <figcaption>Frame 130: fire leaning with the wind gust.</figcaption>
+            <figcaption>Frame 130.</figcaption>
           </figure>
         </div>
 
         <h3>Process</h3>
 
-        <h4>1. Pine trees built with nodes</h4>
+        <h4>Trees</h4>
         <div class="post-pair">
           <figure>
             <img src="blog/day05/a_crown_bands_parms.jpg" alt="WhorlSize parameters">
-            <figcaption>Shows <code>WhorlSize</code>: branch length goes from 1.0 at the bottom to 0.28 at the top.</figcaption>
+            <figcaption>Branch length shrinks to 0.28 at the top.</figcaption>
           </figure>
           <figure>
             <img src="blog/day05/b_branch_tilt_top_parms.jpg" alt="BranchTiltTop parameters">
-            <figcaption>Shows <code>BranchTiltTop</code>: Rotate X −24, which tilts the top band of branches up.</figcaption>
-          </figure>
-        </div>
-        <ul>
-          <li>Each crown band has its own whorls, tilt and blast on the trunk height, then they merge into one crown.</li>
-          <li>Bark uses the bark texture, tinted to the bark colour <code>(0.17, 0.11, 0.07)</code>.</li>
-        </ul>
-        <div class="post-pair">
-          <figure>
-            <img src="blog/day05/c_twigs_net.jpg" alt="Twig nodes in ProcTrees">
-            <figcaption>Shows the twig chain: line, sweep, needle clusters, then copied along each branch.</figcaption>
-          </figure>
-          <figure>
-            <img src="blog/day05/c_twigs_parms.jpg" alt="TwigDirection parameters">
-            <figcaption>Shows <code>TwigDirection</code>: random twig directions between (−1, 0.15, 0.3) and (1, 0.45, 0.9).</figcaption>
+            <figcaption>Top branches tilted up −24°.</figcaption>
           </figure>
         </div>
         <div class="post-pair">
           <figure>
-            <img src="blog/day05/d_dead_branches_net.jpg" alt="Dead branch nodes in ProcTrees">
-            <figcaption>Shows the dead branch chain feeding into <code>OnePine</code>.</figcaption>
+            <img src="blog/day05/c_twigs_net.jpg" alt="Twig nodes">
+            <figcaption>Twig and needle cluster nodes.</figcaption>
           </figure>
           <figure>
-            <img src="blog/day05/d_dead_branches_parms.jpg" alt="DeadLine parameters">
-            <figcaption>Shows <code>DeadLine</code>: length 1.4, pointing slightly down (0, −0.3, 1).</figcaption>
+            <img src="blog/day05/d_dead_branches_net.jpg" alt="Dead branch nodes">
+            <figcaption>Dead branch nodes under the crown.</figcaption>
           </figure>
         </div>
 
-        <h4>2. Tree fire back to the earlier version</h4>
+        <h4>Tree fire</h4>
         <div class="post-pair">
           <figure>
             <img src="blog/day05/k_trees_dop.jpg" alt="PyroTreesDOP flame lifespan">
-            <figcaption>Shows <code>PyroTreesDOP</code> Flame Lifespan 0.7, the earlier value.</figcaption>
+            <figcaption>Flame Lifespan 0.7.</figcaption>
           </figure>
           <figure>
             <img src="blog/day05/s1_trees_shape.jpg" alt="PyroTreesDOP buoyancy and wind">
-            <figcaption>Shows Buoyancy Scale 0.85 and Wind Speed, which follows the Fire Wind channel × 4.</figcaption>
+            <figcaption>Buoyancy 0.85; wind from the Fire Wind channel.</figcaption>
           </figure>
         </div>
-        <ul>
-          <li>Time Scale back to 1, so the flame moves at the earlier speed.</li>
-          <li>Tree sources flicker with the earlier timing.</li>
-        </ul>
 
-        <h4>3. Wind and surge from the reference</h4>
-        <figure>
-          <img src="blog/day05/o_ctrl_wind.jpg" alt="CTRL fire wind and ground surge">
-          <figcaption>Shows the <code>CTRL</code> node at frame 80: Fire Wind 2.316 m/s and Ground Surge 0.049, both keyed from the reference.</figcaption>
-        </figure>
-        <ul>
-          <li>The wind was measured from how the flames drift in the clip, frame by frame.</li>
-          <li>Ground surge rises when the reference centre fire blows up, and drives the fire wall between the trunks.</li>
-          <li>Flame lean: reference about 28°, CG about 35°.</li>
-        </ul>
+        <h4>Wind and red background</h4>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day05/o_ctrl_wind.jpg" alt="CTRL fire wind and ground surge">
+            <figcaption>Fire Wind and Ground Surge, keyed from the reference.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day05/p_cam_background.jpg" alt="CamHero background image">
+            <figcaption>Camera Background Image now empty.</figcaption>
+          </figure>
+        </div>
 
-        <h4>4. Red background removed</h4>
-        <figure>
-          <img src="blog/day05/p_cam_background.jpg" alt="CamHero background image parameter">
-          <figcaption>Shows <code>CamHero</code> with the Background Image field now empty.</figcaption>
-        </figure>
-
-        <h4>5. Ground fire</h4>
+        <h4>Ground fire</h4>
         <div class="post-pair">
           <figure>
             <img src="blog/day05/s4_ground_shape.jpg" alt="PyroGroundDOP buoyancy and wind">
-            <figcaption>Shows <code>PyroGroundDOP</code> Buoyancy Scale 1.3 and Wind Speed from Fire Wind × 1.2.</figcaption>
+            <figcaption>Buoyancy 1.3; wind × 1.2.</figcaption>
           </figure>
           <figure>
-            <img src="blog/day05/h_ground_dop_parms.jpg" alt="PyroGroundDOP setup tab">
-            <figcaption>Shows the setup tab: Max Substeps 2, which removed the stripes in the floor fire.</figcaption>
+            <img src="blog/day05/h_ground_dop_parms.jpg" alt="PyroGroundDOP substeps">
+            <figcaption>Max Substeps 2.</figcaption>
           </figure>
         </div>
-        <figure>
-          <img src="blog/day05/l_ground_dop.jpg" alt="PyroGroundDOP flame lifespan">
-          <figcaption>Shows the floor fire Flame Lifespan of 0.6.</figcaption>
-        </figure>
-        <ul>
-          <li>Max Substeps on <code>PyroGroundDOP</code>: <code>1</code> → <code>2</code>.</li>
-          <li>With 1 substep, each frame's puff of fire rose about 0.25 m before the next one was added, so the floor fire split into horizontal stripes.</li>
-          <li>With 2 substeps the solver fills in between, and the floor fire reads as one continuous flame.</li>
-          <li>Tree fire stays at 1 substep, the same as the earlier version.</li>
-        </ul>
 
-        <h4>6. Blown-out pyro</h4>
+        <h4>Blown-out pyro</h4>
         <div class="post-pair">
           <figure>
-            <img src="blog/day05/s5_ground_look.jpg" alt="PyroGroundDOP smoke colour and intensity">
-            <figcaption>Shows the ground fire Intensity Scale of 9.</figcaption>
+            <img src="blog/day05/s5_ground_look.jpg" alt="PyroGroundDOP intensity">
+            <figcaption>Ground Intensity Scale 9.</figcaption>
           </figure>
           <figure>
             <img src="blog/day05/s2_trees_look.jpg" alt="PyroTreesDOP intensity">
-            <figcaption>Shows the tree fire Intensity Scale of 15.</figcaption>
+            <figcaption>Tree Intensity Scale 15.</figcaption>
           </figure>
         </div>
-        <ul>
-          <li>Lower intensity keeps the flame orange and leaves white only in the hottest core.</li>
-        </ul>
 
-        <h4>7. Embers</h4>
+        <h4>Embers</h4>
         <figure>
           <img src="blog/day05/i_embers_dop_net.jpg" alt="Ember nodes">
-          <figcaption>Shows the ember chain: trunk copies, ember spots on the bark, ember sources, then <code>PyroEmbersDOP</code>.</figcaption>
+          <figcaption>Ember spots placed on the trunks, then into PyroEmbersDOP.</figcaption>
         </figure>
         <div class="post-pair">
           <figure>
             <img src="blog/day05/n_embers_dop.jpg" alt="PyroEmbersDOP shape tab">
-            <figcaption>Shows Buoyancy Scale 0.8, Wind from Fire Wind × 0.5, Disturbance 0.3 with block size 0.15.</figcaption>
+            <figcaption>Buoyancy 0.8; wind × 0.5.</figcaption>
           </figure>
           <figure>
-            <img src="blog/day05/i_embers_dop_parms.jpg" alt="PyroEmbersDOP setup tab">
-            <figcaption>Shows Voxel Size 0.05 and Max Substeps 2 for the ember sim.</figcaption>
+            <img src="blog/day05/i_embers_dop_parms.jpg" alt="PyroEmbersDOP setup">
+            <figcaption>Voxel Size 0.05; Max Substeps 2.</figcaption>
           </figure>
         </div>
-        <figure>
-          <img src="blog/day05/s7_embers_fields.jpg" alt="PyroEmbersDOP flame lifespan">
-          <figcaption>Shows the ember Flame Lifespan of 0.6.</figcaption>
-        </figure>
-        <ul>
-          <li>Before, the ember flames were about 0.3 m and lived 0.3 s, only 2–3 pixels on screen, so they blinked on and off.</li>
-          <li>Now they are small continuous flames licking up the bark and leaning with the wind.</li>
-          <li>Max Substeps on <code>PyroEmbersDOP</code>: <code>1</code> → <code>2</code>, together with the smaller voxels (<code>0.06</code> → <code>0.05</code>), so the thin ember flames stay smooth from frame to frame.</li>
-        </ul>
 
-        <h4>8. Tree colour and shader</h4>
+        <h4>Tree colour</h4>
         <div class="post-pair">
           <figure>
-            <img src="blog/day05/q_needles.jpg" alt="NeedlesColor parameters">
-            <figcaption>Shows <code>NeedlesColor</code>: the desaturated needle green (0.1, 0.12, 0.093).</figcaption>
+            <img src="blog/day05/q_needles.jpg" alt="NeedlesColor">
+            <figcaption>Desaturated needle colour.</figcaption>
           </figure>
           <figure>
-            <img src="blog/day05/f_tree_material_parms.jpg" alt="TreeMatte material parameters">
-            <figcaption>Shows <code>TreeMatte</code>: Base Color 0.7, Use Point Color on, Roughness 1.</figcaption>
+            <img src="blog/day05/f_tree_material_parms.jpg" alt="TreeMatte">
+            <figcaption>Base Color 0.7.</figcaption>
           </figure>
         </div>
 
-        <h4>9. Node network</h4>
+        <h4>Node network</h4>
         <figure>
           <img src="blog/day05/h_ground_dop_net.jpg" alt="Fire node network">
-          <figcaption>Shows the fire network: tree, ground and ember sources going into their own Pyro Solvers, then merged.</figcaption>
+          <figcaption>Tree, ground and ember fire, each in its own Pyro Solver.</figcaption>
         </figure>
 
         <h3>To Do</h3>
