@@ -1472,65 +1472,6 @@
           <li>Side flames left and right of the main fire too tall.</li>
         </ul>
 
-        <h3>Changes Made</h3>
-        <ul>
-          <li><strong>Trees</strong>
-            <ul>
-              <li>Rebuilt the earlier pine with SOP nodes → all 69 trees now have the same pine shape as the earlier version.</li>
-              <li>Trunk lean <code>±4°</code> → <code>0°</code> → the tree line now stands straight like in the clip.</li>
-            </ul>
-          </li>
-          <li><strong>Tree fire</strong>
-            <ul>
-              <li>Time Scale <code>0.2</code> → <code>1</code> → the fire is no longer in slow motion; it moves at the earlier speed.</li>
-              <li>Flame Lifespan set to <code>0.7</code> → flames burn out sooner, so the crowns don't look overfilled with pyro.</li>
-              <li>Buoyancy set to <code>0.85</code> → flames rise more slowly and stay closer to the crowns.</li>
-            </ul>
-          </li>
-          <li><strong>Wind</strong>
-            <ul>
-              <li>Added a Fire Wind channel keyed from the reference → the flames now lean and gust at the same moments as the clip.</li>
-            </ul>
-          </li>
-          <li><strong>Red background</strong>
-            <ul>
-              <li>Camera Background Image removed → the red plate behind the smoke is gone.</li>
-            </ul>
-          </li>
-          <li><strong>Ground fire</strong>
-            <ul>
-              <li>Wind × <code>3.5</code> → × <code>1.2</code> → the ground fire stopped blowing sideways like a blowtorch.</li>
-              <li>Buoyancy <code>1.0</code> → <code>1.3</code> → the ground fire now rises upward, like the centre of the reference.</li>
-              <li>Added a Ground Surge channel → the fire wall shoots up to <code>10 m</code> in the gusts and drops back after.</li>
-              <li>Max Substeps <code>1</code> → <code>2</code> → the horizontal stripes in the floor fire are gone.</li>
-            </ul>
-          </li>
-          <li><strong>Embers</strong>
-            <ul>
-              <li>Removed the glow spheres → the yellow dots on the trees are gone.</li>
-              <li>Flame Lifespan <code>0.3</code> → <code>0.6</code> → ember flames last longer, so they stop blinking on and off.</li>
-              <li>Buoyancy <code>0.5</code> → <code>0.8</code> → ember flames now lick up the bark like small flames.</li>
-              <li>Max Substeps <code>1</code> → <code>2</code> and Voxel Size <code>0.06</code> → <code>0.05</code> → ember flames stay smooth and visible every frame.</li>
-            </ul>
-          </li>
-          <li><strong>Tree colour</strong>
-            <ul>
-              <li>Needle colour <code>(0.09, 0.18, 0.06)</code> → <code>(0.10, 0.12, 0.093)</code> → the green is less saturated.</li>
-              <li>Shader Base Color set to <code>0.7</code> → trees react less to the light and read darker.</li>
-            </ul>
-          </li>
-          <li><strong>Blown-out pyro</strong>
-            <ul>
-              <li>Intensity Scale ground <code>25</code> → <code>9</code>, trees <code>25</code> → <code>15</code> → less white in the flames; blown-out area dropped from <code>8.7%</code> to <code>2.3%</code> of the midground.</li>
-            </ul>
-          </li>
-          <li><strong>Side flames</strong>
-            <ul>
-              <li>Flame amount <code>0.7</code> → <code>0.35</code> → the flames left and right of the main fire are about half as tall.</li>
-            </ul>
-          </li>
-        </ul>
-
         <h3>Reference</h3>
         <figure>
           <video src="blog/ref/ga_fire_reference.mp4" poster="blog/ref/reference_poster.jpg" controls muted loop playsinline preload="metadata"></video>
@@ -1553,17 +1494,17 @@
           </figure>
         </div>
 
-        <h3>Process</h3>
+        <h3>Changes Made</h3>
 
-        <h4>Trees</h4>
+        <h4>1. Trees</h4>
         <div class="post-pair">
           <figure>
             <img src="blog/day05/a_crown_bands_parms.jpg" alt="WhorlSize parameters">
-            <figcaption>Branch length shrinks to 0.28 at the top.</figcaption>
+            <figcaption>WhorlSize: branch length.</figcaption>
           </figure>
           <figure>
             <img src="blog/day05/b_branch_tilt_top_parms.jpg" alt="BranchTiltTop parameters">
-            <figcaption>Top branches tilted up −24°.</figcaption>
+            <figcaption>BranchTiltTop: top branch angle.</figcaption>
           </figure>
         </div>
         <div class="post-pair">
@@ -1573,91 +1514,130 @@
           </figure>
           <figure>
             <img src="blog/day05/d_dead_branches_net.jpg" alt="Dead branch nodes">
-            <figcaption>Dead branch nodes under the crown.</figcaption>
+            <figcaption>Dead branch nodes.</figcaption>
           </figure>
         </div>
+        <ul>
+          <li>Rebuilt the earlier pine with SOP nodes → all 69 trees now have the same pine shape as the earlier version.</li>
+          <li>Output Max <code>0.28</code> → branches get shorter toward the top, giving the pine its narrow crown.</li>
+          <li>Rotate <code>−24°</code> on the top band → upper branches point up, lower ones stay flat.</li>
+          <li>Trunk lean <code>±4°</code> → <code>0°</code> → the tree line now stands straight like in the clip.</li>
+        </ul>
 
-        <h4>Tree fire</h4>
+        <h4>2. Tree fire</h4>
         <div class="post-pair">
           <figure>
             <img src="blog/day05/k_trees_dop.jpg" alt="PyroTreesDOP flame lifespan">
-            <figcaption>Flame Lifespan 0.7.</figcaption>
+            <figcaption>PyroTreesDOP: Flame Lifespan.</figcaption>
           </figure>
           <figure>
             <img src="blog/day05/s1_trees_shape.jpg" alt="PyroTreesDOP buoyancy and wind">
-            <figcaption>Buoyancy 0.85; wind from the Fire Wind channel.</figcaption>
+            <figcaption>PyroTreesDOP: Buoyancy and Wind.</figcaption>
           </figure>
         </div>
+        <ul>
+          <li>Time Scale <code>0.2</code> → <code>1</code> → the fire is no longer in slow motion; it moves at the earlier speed.</li>
+          <li>Flame Lifespan set to <code>0.7</code> → flames burn out sooner, so the crowns don't look overfilled with pyro.</li>
+          <li>Buoyancy set to <code>0.85</code> → flames rise more slowly and stay closer to the crowns.</li>
+        </ul>
 
-        <h4>Wind and red background</h4>
+        <h4>3. Wind and red background</h4>
         <div class="post-pair">
           <figure>
             <img src="blog/day05/o_ctrl_wind.jpg" alt="CTRL fire wind and ground surge">
-            <figcaption>Fire Wind and Ground Surge, keyed from the reference.</figcaption>
+            <figcaption>CTRL: Fire Wind and Ground Surge.</figcaption>
           </figure>
           <figure>
             <img src="blog/day05/p_cam_background.jpg" alt="CamHero background image">
-            <figcaption>Camera Background Image now empty.</figcaption>
+            <figcaption>CamHero: Background Image.</figcaption>
           </figure>
         </div>
+        <ul>
+          <li>Added a Fire Wind channel keyed from the reference → the flames now lean and gust at the same moments as the clip.</li>
+          <li>Wind on each solver: trees × <code>4.0</code>, ground × <code>1.2</code>, embers × <code>0.5</code> → each layer gets the right push for its size.</li>
+          <li>Camera Background Image removed → the red plate behind the smoke is gone.</li>
+        </ul>
 
-        <h4>Ground fire</h4>
+        <h4>4. Ground fire</h4>
         <div class="post-pair">
           <figure>
             <img src="blog/day05/s4_ground_shape.jpg" alt="PyroGroundDOP buoyancy and wind">
-            <figcaption>Buoyancy 1.3; wind × 1.2.</figcaption>
+            <figcaption>PyroGroundDOP: Buoyancy and Wind.</figcaption>
           </figure>
           <figure>
             <img src="blog/day05/h_ground_dop_parms.jpg" alt="PyroGroundDOP substeps">
-            <figcaption>Max Substeps 2.</figcaption>
+            <figcaption>PyroGroundDOP: Max Substeps.</figcaption>
           </figure>
         </div>
+        <ul>
+          <li>Wind × <code>3.5</code> → × <code>1.2</code> → the ground fire stopped blowing sideways like a blowtorch.</li>
+          <li>Buoyancy <code>1.0</code> → <code>1.3</code> → the ground fire now rises upward, like the centre of the reference.</li>
+          <li>Added a Ground Surge channel → the fire wall shoots up to <code>10 m</code> in the gusts and drops back after.</li>
+          <li>Max Substeps <code>1</code> → <code>2</code> → the horizontal stripes in the floor fire are gone.</li>
+        </ul>
 
-        <h4>Blown-out pyro</h4>
-        <div class="post-pair">
-          <figure>
-            <img src="blog/day05/s5_ground_look.jpg" alt="PyroGroundDOP intensity">
-            <figcaption>Ground Intensity Scale 9.</figcaption>
-          </figure>
-          <figure>
-            <img src="blog/day05/s2_trees_look.jpg" alt="PyroTreesDOP intensity">
-            <figcaption>Tree Intensity Scale 15.</figcaption>
-          </figure>
-        </div>
-
-        <h4>Embers</h4>
+        <h4>5. Embers</h4>
         <figure>
           <img src="blog/day05/i_embers_dop_net.jpg" alt="Ember nodes">
-          <figcaption>Ember spots placed on the trunks, then into PyroEmbersDOP.</figcaption>
+          <figcaption>Ember nodes into PyroEmbersDOP.</figcaption>
         </figure>
         <div class="post-pair">
           <figure>
             <img src="blog/day05/n_embers_dop.jpg" alt="PyroEmbersDOP shape tab">
-            <figcaption>Buoyancy 0.8; wind × 0.5.</figcaption>
+            <figcaption>PyroEmbersDOP: Buoyancy, Wind, Disturbance.</figcaption>
           </figure>
           <figure>
             <img src="blog/day05/i_embers_dop_parms.jpg" alt="PyroEmbersDOP setup">
-            <figcaption>Voxel Size 0.05; Max Substeps 2.</figcaption>
+            <figcaption>PyroEmbersDOP: Voxel Size and Max Substeps.</figcaption>
           </figure>
         </div>
+        <ul>
+          <li>Removed the glow spheres and placed the spots on the trunk surface → no more yellow dots; embers sit on the bark.</li>
+          <li>Flame Lifespan <code>0.3</code> → <code>0.6</code> → ember flames last longer, so they stop blinking on and off.</li>
+          <li>Buoyancy <code>0.5</code> → <code>0.8</code> → ember flames now lick up the bark like small flames.</li>
+          <li>Max Substeps <code>1</code> → <code>2</code> and Voxel Size <code>0.06</code> → <code>0.05</code> → ember flames stay smooth and visible every frame.</li>
+        </ul>
 
-        <h4>Tree colour</h4>
+        <h4>6. Tree colour</h4>
         <div class="post-pair">
           <figure>
             <img src="blog/day05/q_needles.jpg" alt="NeedlesColor">
-            <figcaption>Desaturated needle colour.</figcaption>
+            <figcaption>NeedlesColor.</figcaption>
           </figure>
           <figure>
             <img src="blog/day05/f_tree_material_parms.jpg" alt="TreeMatte">
-            <figcaption>Base Color 0.7.</figcaption>
+            <figcaption>TreeMatte shader.</figcaption>
           </figure>
         </div>
+        <ul>
+          <li>Needle colour <code>(0.09, 0.18, 0.06)</code> → <code>(0.10, 0.12, 0.093)</code> → the green is less saturated.</li>
+          <li>Base Color set to <code>0.7</code>, Roughness <code>1</code> → trees react less to the light and read darker.</li>
+        </ul>
 
-        <h4>Node network</h4>
+        <h4>7. Blown-out pyro and side flames</h4>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day05/s5_ground_look.jpg" alt="PyroGroundDOP intensity">
+            <figcaption>PyroGroundDOP: Intensity Scale.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day05/s2_trees_look.jpg" alt="PyroTreesDOP intensity">
+            <figcaption>PyroTreesDOP: Intensity Scale.</figcaption>
+          </figure>
+        </div>
+        <ul>
+          <li>Intensity Scale ground <code>25</code> → <code>9</code>, trees <code>25</code> → <code>15</code> → less white in the flames; blown-out area dropped from <code>8.7%</code> to <code>2.3%</code> of the midground.</li>
+          <li>Side flame amount <code>0.7</code> → <code>0.35</code> → the flames left and right of the main fire are about half as tall.</li>
+        </ul>
+
+        <h4>8. Node network</h4>
         <figure>
           <img src="blog/day05/h_ground_dop_net.jpg" alt="Fire node network">
-          <figcaption>Tree, ground and ember fire, each in its own Pyro Solver.</figcaption>
+          <figcaption>Fire network.</figcaption>
         </figure>
+        <ul>
+          <li>Tree fire, ground fire and embers each go into their own Pyro Solver → each can be tuned without changing the others.</li>
+        </ul>
 
         <h3>To Do</h3>
         <ol>
