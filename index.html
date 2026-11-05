@@ -1673,6 +1673,12 @@
           <img src="blog/day05/l_ground_dop.jpg" alt="PyroGroundDOP flame lifespan">
           <figcaption>Shows the floor fire Flame Lifespan of 0.6.</figcaption>
         </figure>
+        <ul>
+          <li>Max Substeps on <code>PyroGroundDOP</code>: <code>1</code> → <code>2</code>.</li>
+          <li>With 1 substep, each frame's puff of fire rose about 0.25 m before the next one was added, so the floor fire split into horizontal stripes.</li>
+          <li>With 2 substeps the solver fills in between, and the floor fire reads as one continuous flame.</li>
+          <li>Tree fire stays at 1 substep, the same as the earlier version.</li>
+        </ul>
 
         <h4>6. Blown-out pyro</h4>
         <div class="post-pair">
@@ -1711,6 +1717,7 @@
         <ul>
           <li>Before, the ember flames were about 0.3 m and lived 0.3 s, only 2–3 pixels on screen, so they blinked on and off.</li>
           <li>Now they are small continuous flames licking up the bark and leaning with the wind.</li>
+          <li>Max Substeps on <code>PyroEmbersDOP</code>: <code>1</code> → <code>2</code>, together with the smaller voxels (<code>0.06</code> → <code>0.05</code>), so the thin ember flames stay smooth from frame to frame.</li>
         </ul>
 
         <h4>8. Tree colour and shader</h4>
