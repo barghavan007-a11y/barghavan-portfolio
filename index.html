@@ -778,6 +778,11 @@
               <span class="entry-title">Pine trees with nodes, reference wind, ember flames and colour fixes</span>
               <span class="entry-date">Nov 5, 2026</span>
             </a>
+            <a class="entry-link" href="#ga-fire-entry5" onclick="openEntry('ga-fire-entry5'); return false;">
+              <span class="entry-num">Entry 5</span>
+              <span class="entry-title">Smaller tree fire, glowing embers and denser smoke</span>
+              <span class="entry-date">Nov 10, 2026</span>
+            </a>
           </div>
         </article>
       </div>
@@ -1637,6 +1642,114 @@
         </figure>
         <ul>
           <li>Tree fire, ground fire and embers each go into their own Pyro Solver → each can be tuned without changing the others.</li>
+        </ul>
+
+        <h3>To Do</h3>
+        <ol>
+          <li>Apply the feedback and suggestions from the next review.</li>
+          <li>Plan a test of Zibra VDB for the pyro caches.</li>
+        </ol>
+      </article>
+      <article class="post entry-view" id="ga-fire-entry5">
+        <div class="back" onclick="closeEntry()">← Back to Blog</div>
+        <div class="post-meta">Georgia Wildfire · Entry 5 · Nov 10, 2026</div>
+        <h2>Entry 5 Progress Blog</h2>
+
+        <h3>Feedback</h3>
+        <ul>
+          <li>The fire on the trees is too big; make it smaller.</li>
+          <li>Embers shouldn't move like flames and are flickering; embers should glow.</li>
+          <li>The smoke should be denser.</li>
+        </ul>
+
+        <h3>Reference</h3>
+        <figure>
+          <video src="blog/ref/ga_fire_reference.mp4" poster="blog/ref/reference_poster.jpg" controls muted loop playsinline preload="metadata"></video>
+          <figcaption>Reference: CBS Mornings news footage of the Georgia fires.</figcaption>
+        </figure>
+
+        <h3>Progress</h3>
+        <figure>
+          <video src="blog/day06/ga_fire_side_by_side_day06.mp4" poster="blog/day06/flipbook_poster.jpg" controls muted loop playsinline preload="metadata"></video>
+          <figcaption>Reference on the left, flipbook on the right.</figcaption>
+        </figure>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day06/cg_frame_0060.jpg" alt="Flipbook frame 60">
+            <figcaption>Frame 60.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day06/cg_frame_0120.jpg" alt="Flipbook frame 120">
+            <figcaption>Frame 120.</figcaption>
+          </figure>
+        </div>
+
+        <h3>Changes Made</h3>
+
+        <h4>1. Smaller tree fire</h4>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day06/e1_trees_lifespan.jpg" alt="PyroTreesDOP flame lifespan">
+            <figcaption>PyroTreesDOP: Flame Lifespan.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day06/e2_trees_buoyancy.jpg" alt="PyroTreesDOP buoyancy">
+            <figcaption>PyroTreesDOP: Buoyancy Scale.</figcaption>
+          </figure>
+        </div>
+        <ul>
+          <li>Flame Lifespan <code>0.7</code> → <code>0.45</code> → flames burn out sooner, so they stay shorter.</li>
+          <li>Buoyancy Scale <code>0.85</code> → <code>0.7</code> → flames rise more slowly and stay in the crowns.</li>
+          <li>Flame on the tree sources <code>1.0</code> → <code>0.6</code> → less fire coming off each tree.</li>
+        </ul>
+
+        <h4>2. Embers glow instead of moving like flames</h4>
+        <figure>
+          <img src="blog/day06/n1_pyro_merge.jpg" alt="PyroMerge network">
+          <figcaption>PyroEmbersDOP disconnected from PyroMerge.</figcaption>
+        </figure>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day06/e7_glow_shape.jpg" alt="EmberGlowBall parameters">
+            <figcaption>EmberGlowBall: Radius.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day06/e8_glow_mat.jpg" alt="EmberGlowMat emission">
+            <figcaption>EmberGlowMat: Emission.</figcaption>
+          </figure>
+        </div>
+        <ul>
+          <li>PyroEmbersDOP taken out of PyroMerge → no more ember flames moving or flickering.</li>
+          <li>EmberGlowBall Radius <code>(1, 1, 0.35)</code> → <code>(0.5, 3, 0.06)</code> → a thin glowing strip lying on the bark instead of a ball.</li>
+          <li>Emission Intensity <code>2.2</code> → <code>1.2</code>, colour <code>(1, 0.3, 0.03)</code> → <code>(1, 0.24, 0.03)</code> → a steady deep orange glow instead of yellow dots.</li>
+        </ul>
+
+        <h4>3. Denser smoke</h4>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day06/e3_trees_density.jpg" alt="PyroTreesDOP density scale">
+            <figcaption>PyroTreesDOP: Density Scale.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day06/e4_trees_dissipation.jpg" alt="PyroTreesDOP dissipation">
+            <figcaption>PyroTreesDOP: Dissipation.</figcaption>
+          </figure>
+        </div>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day06/e5_ground_smoke.jpg" alt="PyroGroundDOP smoke">
+            <figcaption>PyroGroundDOP: Density Scale and Smoke Color.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day06/e6_layer_density.jpg" alt="SmokeLayerDOP density scale">
+            <figcaption>SmokeLayerDOP: Density Scale.</figcaption>
+          </figure>
+        </div>
+        <ul>
+          <li>Density Scale trees <code>1</code> → <code>2.5</code>, ground <code>1</code> → <code>1.8</code>, smoke layer <code>1</code> → <code>2</code> → thicker smoke.</li>
+          <li>Dissipation <code>0.05</code> → <code>0.02</code> on trees and ground → smoke lasts longer before fading.</li>
+          <li>Smoke from the tree crowns <code>1.6</code> → <code>2.6</code> → more smoke coming off the trees.</li>
+          <li>Ground Smoke Color <code>(0.42, 0.33, 0.27)</code> → <code>(0.25, 0.17, 0.12)</code> → darker smoke that doesn't wash the ground fire out in grey.</li>
         </ul>
 
         <h3>To Do</h3>
