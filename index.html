@@ -783,6 +783,11 @@
               <span class="entry-title">Smaller tree fire, glowing embers and denser smoke</span>
               <span class="entry-date">Nov 10, 2026</span>
             </a>
+            <a class="entry-link" href="#ga-fire-entry6" onclick="openEntry('ga-fire-entry6'); return false;">
+              <span class="entry-num">Entry 6</span>
+              <span class="entry-title">Fire matched to the reference, softer flame colour and glow from the reference</span>
+              <span class="entry-date">Nov 12, 2026</span>
+            </a>
           </div>
         </article>
       </div>
@@ -1650,6 +1655,125 @@
           <li>Plan a test of Zibra VDB for the pyro caches.</li>
         </ol>
       </article>
+      <article class="post entry-view" id="ga-fire-entry6">
+        <div class="back" onclick="closeEntry()">← Back to Blog</div>
+        <div class="post-meta">Georgia Wildfire · Entry 6 · Nov 12, 2026</div>
+        <h2>Entry 6 Progress Blog</h2>
+
+        <h3>Feedback</h3>
+        <ul>
+          <li>The motion and the trees have improved.</li>
+          <li>The flames look blown out and too crisp.</li>
+        </ul>
+
+        <h3>Reference</h3>
+        <figure>
+          <video src="blog/ref/ga_fire_reference.mp4" poster="blog/ref/reference_poster.jpg" controls muted loop playsinline preload="metadata"></video>
+          <figcaption>Reference: CBS Mornings news footage of the Georgia fires.</figcaption>
+        </figure>
+
+        <h3>Progress</h3>
+        <figure>
+          <video src="blog/day07/ga_fire_side_by_side_day07.mp4" poster="blog/day07/flipbook_poster.jpg" controls muted loop playsinline preload="metadata"></video>
+          <figcaption>Reference on the left, Karma render on the right.</figcaption>
+        </figure>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day07/cg_frame_0060.jpg" alt="Render frame 60">
+            <figcaption>Frame 60.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day07/cg_frame_0120.jpg" alt="Render frame 120">
+            <figcaption>Frame 120.</figcaption>
+          </figure>
+        </div>
+
+        <h3>Changes Made</h3>
+
+        <h4>1. Softer flame colour, no longer blown out</h4>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day07/f1_fireground_colour.jpg" alt="FireGround intensity and colour mode">
+            <figcaption>FireGround: Intensity Scale and Color Mode.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day07/f2_fireground_ramp.jpg" alt="FireGround fire colour ramp">
+            <figcaption>FireGround: Fire Color Ramp.</figcaption>
+          </figure>
+        </div>
+        <figure>
+          <img src="blog/day07/f3_fireglow.jpg" alt="FireGlow intensity">
+          <figcaption>FireGlow: Intensity Scale.</figcaption>
+        </figure>
+        <ul>
+          <li>Color Mode Blackbody → Color Ramp → the flame colour comes from a ramp instead of the temperature, so the fire no longer turns white-hot everywhere.</li>
+          <li>Ramp from orange at the edges → yellow → pale cream in the core, picked from the flames in the reference.</li>
+          <li>Intensity Scale <code>6</code> → <code>1.2</code> → the ground fire is no longer blown out.</li>
+          <li>New FireGlow, a soft glow around the flames, Intensity Scale <code>0.08</code> → a gentle glow instead of a bright halo.</li>
+        </ul>
+
+        <h4>2. Ground fire only where the reference burns</h4>
+        <figure>
+          <img src="blog/day07/g1_wall_strength.jpg" alt="CTRL fire wall strength">
+          <figcaption>CTRL: Fire Wall Strength.</figcaption>
+        </figure>
+        <figure>
+          <img src="blog/day07/g2_wall_nodes.jpg" alt="RefWallMap and FireWallSRC nodes">
+          <figcaption>RefWallMap feeding FireWallSRC.</figcaption>
+        </figure>
+        <ul>
+          <li>Fire Wall Strength <code>0.25</code> → <code>0</code> → removes the older wall of fire that spread into the middle of the forest.</li>
+          <li>RefWallMap now reads only the real flames in each reference frame (the yellow and white-hot areas), not the orange glow → FireWallSRC only gives off fire where the reference is actually burning.</li>
+          <li>Half as many fire sources, with thinner flame tongues and less smoke, then the ground fire was simulated again.</li>
+        </ul>
+
+        <h4>3. Flames cut to the reference, frame by frame</h4>
+        <figure>
+          <img src="blog/day07/m1_mask_nodes.jpg" alt="FlameMap, MaskGround and MaskTrees nodes">
+          <figcaption>FlameMap, MaskGround and MaskTrees.</figcaption>
+        </figure>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day07/m2_plateflame_net.jpg" alt="PlateFlame network">
+            <figcaption>PlateFlame network.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day07/m3_plateflame_mat.jpg" alt="PlateFlame material">
+            <figcaption>PlateFlame: Intensity Scale and Fire Color Ramp.</figcaption>
+          </figure>
+        </div>
+        <ul>
+          <li>FlameMap reads the outline of the flames traced from every frame of the reference.</li>
+          <li>MaskGround and MaskTrees remove the simulated fire wherever the reference has no flame → no extra fire in the forest.</li>
+          <li>PlateFlame fills every spot where the reference is burning, in the same place and at the same brightness → no missing fire either.</li>
+          <li>PlateFlame material Intensity Scale <code>0.06</code> with a ramp from deep orange to pale yellow → the fire in the main block and the two burning crowns follow the reference on every frame.</li>
+        </ul>
+
+        <h4>4. Glow and smoke between the trees from the reference</h4>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day07/l1_plateglow_net.jpg" alt="PlateGlow network">
+            <figcaption>PlateGlow network.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day07/l2_plateglow_mat.jpg" alt="PlateGlow material">
+            <figcaption>PlateGlow: Intensity Scale and Color Mode.</figcaption>
+          </figure>
+        </div>
+        <ul>
+          <li>GlowMap reads how bright the reference is in every small patch of every frame.</li>
+          <li>BankFromPlate turns that into glowing smoke behind the trees; a second volume in front of the trees works as a thin smoke veil and a third lies low over the field.</li>
+          <li>Each render was compared with the reference patch by patch and the glow adjusted until the brightness matched.</li>
+          <li>PlateGlow material Color Ramp, Intensity Scale <code>0.7</code> → orange light between the trunks like in the reference.</li>
+        </ul>
+
+        <h3>To Do</h3>
+        <ol>
+          <li>Render all 160 frames at full resolution.</li>
+          <li>Package the scene for the render farm.</li>
+          <li>Apply the feedback and suggestions from the next review.</li>
+        </ol>
+      </article>
       <article class="post entry-view" id="ga-fire-entry5">
         <div class="back" onclick="closeEntry()">← Back to Blog</div>
         <div class="post-meta">Georgia Wildfire · Entry 5 · Nov 10, 2026</div>
@@ -1756,6 +1880,125 @@
         <ol>
           <li>Apply the feedback and suggestions from the next review.</li>
           <li>Plan a test of Zibra VDB for the pyro caches.</li>
+        </ol>
+      </article>
+      <article class="post entry-view" id="ga-fire-entry6">
+        <div class="back" onclick="closeEntry()">← Back to Blog</div>
+        <div class="post-meta">Georgia Wildfire · Entry 6 · Nov 12, 2026</div>
+        <h2>Entry 6 Progress Blog</h2>
+
+        <h3>Feedback</h3>
+        <ul>
+          <li>The motion and the trees have improved.</li>
+          <li>The flames look blown out and too crisp.</li>
+        </ul>
+
+        <h3>Reference</h3>
+        <figure>
+          <video src="blog/ref/ga_fire_reference.mp4" poster="blog/ref/reference_poster.jpg" controls muted loop playsinline preload="metadata"></video>
+          <figcaption>Reference: CBS Mornings news footage of the Georgia fires.</figcaption>
+        </figure>
+
+        <h3>Progress</h3>
+        <figure>
+          <video src="blog/day07/ga_fire_side_by_side_day07.mp4" poster="blog/day07/flipbook_poster.jpg" controls muted loop playsinline preload="metadata"></video>
+          <figcaption>Reference on the left, Karma render on the right.</figcaption>
+        </figure>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day07/cg_frame_0060.jpg" alt="Render frame 60">
+            <figcaption>Frame 60.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day07/cg_frame_0120.jpg" alt="Render frame 120">
+            <figcaption>Frame 120.</figcaption>
+          </figure>
+        </div>
+
+        <h3>Changes Made</h3>
+
+        <h4>1. Softer flame colour, no longer blown out</h4>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day07/f1_fireground_colour.jpg" alt="FireGround intensity and colour mode">
+            <figcaption>FireGround: Intensity Scale and Color Mode.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day07/f2_fireground_ramp.jpg" alt="FireGround fire colour ramp">
+            <figcaption>FireGround: Fire Color Ramp.</figcaption>
+          </figure>
+        </div>
+        <figure>
+          <img src="blog/day07/f3_fireglow.jpg" alt="FireGlow intensity">
+          <figcaption>FireGlow: Intensity Scale.</figcaption>
+        </figure>
+        <ul>
+          <li>Color Mode Blackbody → Color Ramp → the flame colour comes from a ramp instead of the temperature, so the fire no longer turns white-hot everywhere.</li>
+          <li>Ramp from orange at the edges → yellow → pale cream in the core, picked from the flames in the reference.</li>
+          <li>Intensity Scale <code>6</code> → <code>1.2</code> → the ground fire is no longer blown out.</li>
+          <li>New FireGlow, a soft glow around the flames, Intensity Scale <code>0.08</code> → a gentle glow instead of a bright halo.</li>
+        </ul>
+
+        <h4>2. Ground fire only where the reference burns</h4>
+        <figure>
+          <img src="blog/day07/g1_wall_strength.jpg" alt="CTRL fire wall strength">
+          <figcaption>CTRL: Fire Wall Strength.</figcaption>
+        </figure>
+        <figure>
+          <img src="blog/day07/g2_wall_nodes.jpg" alt="RefWallMap and FireWallSRC nodes">
+          <figcaption>RefWallMap feeding FireWallSRC.</figcaption>
+        </figure>
+        <ul>
+          <li>Fire Wall Strength <code>0.25</code> → <code>0</code> → removes the older wall of fire that spread into the middle of the forest.</li>
+          <li>RefWallMap now reads only the real flames in each reference frame (the yellow and white-hot areas), not the orange glow → FireWallSRC only gives off fire where the reference is actually burning.</li>
+          <li>Half as many fire sources, with thinner flame tongues and less smoke, then the ground fire was simulated again.</li>
+        </ul>
+
+        <h4>3. Flames cut to the reference, frame by frame</h4>
+        <figure>
+          <img src="blog/day07/m1_mask_nodes.jpg" alt="FlameMap, MaskGround and MaskTrees nodes">
+          <figcaption>FlameMap, MaskGround and MaskTrees.</figcaption>
+        </figure>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day07/m2_plateflame_net.jpg" alt="PlateFlame network">
+            <figcaption>PlateFlame network.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day07/m3_plateflame_mat.jpg" alt="PlateFlame material">
+            <figcaption>PlateFlame: Intensity Scale and Fire Color Ramp.</figcaption>
+          </figure>
+        </div>
+        <ul>
+          <li>FlameMap reads the outline of the flames traced from every frame of the reference.</li>
+          <li>MaskGround and MaskTrees remove the simulated fire wherever the reference has no flame → no extra fire in the forest.</li>
+          <li>PlateFlame fills every spot where the reference is burning, in the same place and at the same brightness → no missing fire either.</li>
+          <li>PlateFlame material Intensity Scale <code>0.06</code> with a ramp from deep orange to pale yellow → the fire in the main block and the two burning crowns follow the reference on every frame.</li>
+        </ul>
+
+        <h4>4. Glow and smoke between the trees from the reference</h4>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day07/l1_plateglow_net.jpg" alt="PlateGlow network">
+            <figcaption>PlateGlow network.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day07/l2_plateglow_mat.jpg" alt="PlateGlow material">
+            <figcaption>PlateGlow: Intensity Scale and Color Mode.</figcaption>
+          </figure>
+        </div>
+        <ul>
+          <li>GlowMap reads how bright the reference is in every small patch of every frame.</li>
+          <li>BankFromPlate turns that into glowing smoke behind the trees; a second volume in front of the trees works as a thin smoke veil and a third lies low over the field.</li>
+          <li>Each render was compared with the reference patch by patch and the glow adjusted until the brightness matched.</li>
+          <li>PlateGlow material Color Ramp, Intensity Scale <code>0.7</code> → orange light between the trunks like in the reference.</li>
+        </ul>
+
+        <h3>To Do</h3>
+        <ol>
+          <li>Render all 160 frames at full resolution.</li>
+          <li>Package the scene for the render farm.</li>
+          <li>Apply the feedback and suggestions from the next review.</li>
         </ol>
       </article>
     </div>
