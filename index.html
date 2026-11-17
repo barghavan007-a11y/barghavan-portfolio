@@ -788,6 +788,11 @@
               <span class="entry-title">Fire matched to the reference, softer flame colour and glow from the reference</span>
               <span class="entry-date">Nov 12, 2026</span>
             </a>
+            <a class="entry-link" href="#ga-fire-entry7" onclick="openEntry('ga-fire-entry7'); return false;">
+              <span class="entry-num">Entry 7</span>
+              <span class="entry-title">Burning line along the floor, small flames in the crowns and a calmer glow</span>
+              <span class="entry-date">Nov 17, 2026</span>
+            </a>
           </div>
         </article>
       </div>
@@ -1998,6 +2003,97 @@
         <ol>
           <li>Render all 160 frames at full resolution.</li>
           <li>Package the scene for the render farm.</li>
+          <li>Apply the feedback and suggestions from the next review.</li>
+        </ol>
+      </article>
+
+      <article class="post entry-view" id="ga-fire-entry7">
+        <div class="back" onclick="closeEntry()">← Back to Blog</div>
+        <div class="post-meta">Georgia Wildfire · Entry 7 · Nov 17, 2026</div>
+        <h2>Entry 7 Progress Blog</h2>
+
+        <h3>Feedback</h3>
+        <ul>
+          <li>Something looked wrong along the ground under the forest.</li>
+          <li>The glow in the background was too strong.</li>
+          <li>Missing from the reference: small flames in the crowns, the thin burning line along the forest floor, and the orange light between the trunks on the left.</li>
+          <li>A soft bright glow sat around the centre of the fire.</li>
+        </ul>
+
+        <h3>Reference</h3>
+        <figure>
+          <video src="blog/ref/ga_fire_reference.mp4" poster="blog/ref/reference_poster.jpg" controls muted loop playsinline preload="metadata"></video>
+          <figcaption>Reference: CBS Mornings news footage of the Georgia fires.</figcaption>
+        </figure>
+
+        <h3>Progress</h3>
+        <figure>
+          <video src="blog/day08/ga_fire_side_by_side_day08.mp4" poster="blog/day08/flipbook_poster.jpg" controls muted loop playsinline preload="metadata"></video>
+          <figcaption>Reference on the left, Karma render on the right.</figcaption>
+        </figure>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/day08/cg_frame_0060.jpg" alt="Render frame 60">
+            <figcaption>Frame 60.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/day08/cg_frame_0130.jpg" alt="Render frame 130">
+            <figcaption>Frame 130.</figcaption>
+          </figure>
+        </div>
+
+        <h3>Changes Made</h3>
+
+        <h4>1. Calmer glow, no bright patch in the centre</h4>
+        <figure>
+          <img src="blog/day08/g2_firelight_exposure.jpg" alt="FireLight exposure">
+          <figcaption>FireLight: Exposure.</figcaption>
+        </figure>
+        <ul>
+          <li>PlateGlow Intensity Scale <code>0.7</code> → <code>0.1</code> → the glow behind the trees is much softer.</li>
+          <li>The glow volume that lay over the field was switched off → it was lighting the ground under the forest and caused the strange smear there.</li>
+          <li>FireLight Exposure <code>3</code> → <code>2</code> (half as bright) → it was lighting the smoke around the fire into a soft bright patch in the centre.</li>
+        </ul>
+
+        <h4>2. Flames from the reference: only the real flame bodies</h4>
+        <figure>
+          <img src="blog/day08/p1_plateflame_int.jpg" alt="PlateFlame intensity scale">
+          <figcaption>PlateFlame: Intensity Scale.</figcaption>
+        </figure>
+        <ul>
+          <li>The flame outline traced from the reference now keeps only the big flame bodies: the main fire and the two burning crowns.</li>
+          <li>The tiny specks are removed → at this size they rendered as pale blurry blobs in the crowns and along the floor instead of flames.</li>
+          <li>The small flames are now built separately (sections 3 and 4) so they stay sharp.</li>
+        </ul>
+
+        <h4>3. Burning line along the forest floor</h4>
+        <figure>
+          <img src="blog/day08/b1_baseline_net.jpg" alt="BaseLine network">
+          <figcaption>BaseLine network: Floor, SampleRef, FireStrip.</figcaption>
+        </figure>
+        <ul>
+          <li>Floor is a line along the base of the forest.</li>
+          <li>SampleRef reads, in every frame, how strongly the reference burns at each spot along the floor.</li>
+          <li>FireStrip builds a thin strip of fire there: bright yellow-orange at the bottom, flickering flame tongues of different heights, fading out at the top → it burns where the reference burns and goes dark where the reference is dark.</li>
+          <li>Brightness <code>7</code>, measured against the burning line in the reference.</li>
+          <li>BaseLine material: emission colour and opacity come from the strip itself, so the tongues glow and fade at their tips.</li>
+        </ul>
+
+        <h4>4. Small flames in the crowns and on the trunks</h4>
+        <figure>
+          <img src="blog/day08/c1_crownflames_net.jpg" alt="CrownFlames network">
+          <figcaption>CrownFlames network: FlameTongues.</figcaption>
+        </figure>
+        <ul>
+          <li>Every frame of the reference was checked for small flames in the crowns and on the trunks.</li>
+          <li>FlameTongues places a small flickering flame tongue at each of those spots, frame by frame → the small flames appear and move like in the reference.</li>
+          <li>Brightness <code>7</code>, the same as the burning line, using the same BaseLine material.</li>
+        </ul>
+
+        <h3>To Do</h3>
+        <ol>
+          <li>Render all 160 frames at full resolution on the render farm with Karma XPU.</li>
+          <li>Brighten the orange light between the trunks in the left part of the forest.</li>
           <li>Apply the feedback and suggestions from the next review.</li>
         </ol>
       </article>
