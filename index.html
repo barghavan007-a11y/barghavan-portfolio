@@ -728,7 +728,8 @@
           <p class="post-sub">Forest Fire Simulation Technical Summary</p>
 
           <figure>
-            <img src="blog/day03/03_final_v6.jpg" alt="Two hero pines torching in front of a dark forest edge under orange smoke">
+            <video src="blog/entry08/ga_fire_final.mp4" poster="blog/entry08/ga_fire_final_poster.jpg" controls muted loop playsinline preload="metadata"></video>
+            <figcaption>Final shot (Entry 8).</figcaption>
           </figure>
 
           <h3>Summary</h3>
@@ -743,9 +744,10 @@
             can interact with the real tree geometry, and to a closer shot built around two hero trees (Entry 2). The latest round
             added tree variants, split the fire into separate pyro DOPs and matched the layout, camera,
             embers and ground fire to the clip (Entry 3).
+            The final version (Entry 8) was rendered in tiles on the render farm with Karma XPU and comped in Nuke.
           </p>
           <ul class="spec-list">
-            <li><strong>Software:</strong> Houdini 22 (SOPs, VEX, Sparse Pyro Solver), Nuke</li>
+            <li><strong>Software:</strong> Houdini 22 (SOPs, VEX, Sparse Pyro Solver, Solaris, Karma XPU), Nuke</li>
             <li><strong>Shot:</strong> 160 frames at 24 fps (6.7 seconds) to match the reference, 1920 × 1080</li>
             <li><strong>Main effects:</strong> torching crowns, trunk and ground fire, wind-driven tree motion, smoke layers, forest edge</li>
           </ul>
@@ -792,6 +794,11 @@
               <span class="entry-num">Entry 7</span>
               <span class="entry-title">Burning line along the floor, small flames in the crowns and a calmer glow</span>
               <span class="entry-date">Nov 17, 2026</span>
+            </a>
+            <a class="entry-link" href="#ga-fire-entry8" onclick="openEntry('ga-fire-entry8'); return false;">
+              <span class="entry-num">Entry 8</span>
+              <span class="entry-title">Final: step-by-step process, DOP Pyro settings, VEX, tiled farm render and Nuke comp</span>
+              <span class="entry-date">Nov 19, 2026</span>
             </a>
           </div>
         </article>
@@ -2096,6 +2103,183 @@
           <li>Brighten the orange light between the trunks in the left part of the forest.</li>
           <li>Apply the feedback and suggestions from the next review.</li>
         </ol>
+      </article>
+      <article class="post entry-view" id="ga-fire-entry8">
+        <div class="back" onclick="closeEntry()">← Back to Blog</div>
+        <div class="post-meta">Georgia Wildfire · Entry 8 · Nov 19, 2026</div>
+        <h2>Entry 8 Final Blog</h2>
+
+        <h3>Changes From Previous Feedback</h3>
+        <ul>
+          <li>The flames looked blown out and too crisp, so the flame colour was softened and the hottest cores now roll off to white the way the phone camera in the reference does.</li>
+          <li>The crown fire look from the earlier version was kept.</li>
+          <li>Full frames kept getting stopped on the render farm, so the frame was split into tiles inside the render USD and put back together in Nuke.</li>
+        </ul>
+
+        <h3>Reference</h3>
+        <figure>
+          <video src="blog/ref/ga_fire_reference.mp4" poster="blog/ref/reference_poster.jpg" controls muted loop playsinline preload="metadata"></video>
+          <figcaption>Reference: CBS Mornings news footage of the Georgia fires.</figcaption>
+        </figure>
+
+        <h3>Final</h3>
+        <figure>
+          <video src="blog/entry08/ga_fire_final.mp4" poster="blog/entry08/ga_fire_final_poster.jpg" controls muted loop playsinline preload="metadata"></video>
+          <figcaption>Final shot: 160 frames, 1920 × 1080, Karma XPU, comped in Nuke.</figcaption>
+        </figure>
+        <figure>
+          <video src="blog/entry08/ga_fire_final_vs_reference.mp4" poster="blog/entry08/ga_fire_final_vs_reference_poster.jpg" controls muted loop playsinline preload="metadata"></video>
+          <figcaption>Reference on the left, CG on the right, frame by frame.</figcaption>
+        </figure>
+        <figure>
+          <img src="blog/entry08/final_still_f100.jpg" alt="Final render, frame 100">
+          <figcaption>Final still, frame 100.</figcaption>
+        </figure>
+
+        <h3>Breakdown</h3>
+        <figure>
+          <video src="blog/entry08/ga_fire_breakdown.mp4" poster="blog/entry08/ga_fire_breakdown_poster.jpg" controls muted loop playsinline preload="metadata"></video>
+          <figcaption>FX breakdown: trees, shading, lighting, FX, comp, and the reference vs CG comparison.</figcaption>
+        </figure>
+
+        <h3>Process</h3>
+
+        <h4>1. Procedural trees (SOP nodes only)</h4>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/entry08/t2_tree_layout.jpg" alt="Procedural forest layout in the viewport">
+            <figcaption>The forest laid out from the tree variants.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/entry08/t3_trees_clay.jpg" alt="Close view of the procedural pines without textures">
+            <figcaption>Longleaf pines up close, before shading.</figcaption>
+          </figure>
+        </div>
+        <ul>
+          <li>Longleaf pines, a broadleaf oak and clump pines built only with SOP nodes: curves for trunks and branches, sweeps for thickness, needle clusters copied onto branch tips.</li>
+          <li>Each tree type is a variant; the forest is instanced on points with random size and spin.</li>
+          <li>All the tree shapes are driven from one CTRL node (heights, crown start, branch counts).</li>
+        </ul>
+
+        <h4>2. Textures and shaders</h4>
+        <figure>
+          <img src="blog/entry08/s1_trees_textured.jpg" alt="Pines with bark and needle shaders">
+          <figcaption>Bark and needle shaders on the same trees.</figcaption>
+        </figure>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/entry08/s2_bark_closeup.jpg" alt="Bark close-up">
+            <figcaption>Bark close-up.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/entry08/s3_needles_closeup.jpg" alt="Needle close-up">
+            <figcaption>Needles close-up.</figcaption>
+          </figure>
+        </div>
+        <figure>
+          <img src="blog/entry08/s4_oak_closeup.jpg" alt="Oak leaves close-up">
+          <figcaption>Oak leaves close-up.</figcaption>
+        </figure>
+        <ul>
+          <li>Bark: tiling bark texture on the trunks; needles and leaves: separate shader with their own colour.</li>
+          <li>Burnt parts darken to char as the fire passes (driven by the burn attributes from VEX, below).</li>
+        </ul>
+
+        <h4>3. Lighting (Karma XPU)</h4>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/entry08/l1_light.jpg" alt="Fire light only">
+            <figcaption>Fire light on the trunks.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/entry08/l2_light.jpg" alt="Plus back glow">
+            <figcaption>+ textured back glow behind the forest.</figcaption>
+          </figure>
+        </div>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/entry08/l3_light.jpg" alt="Plus rim light">
+            <figcaption>+ forest rim light.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/entry08/l4_light.jpg" alt="Plus glowing smoke and haze">
+            <figcaption>+ glowing smoke and haze.</figcaption>
+          </figure>
+        </div>
+        <ul>
+          <li>Lights built up one at a time in Solaris: fire light, a large textured back light for the glow through the smoke, a rim light and a warm dome.</li>
+          <li>Each light's strength was matched to the reference by comparing renders with each light switched off.</li>
+        </ul>
+
+        <h4>4. FX: DOP Pyro</h4>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/entry08/p1_pyro_f060.jpg" alt="Pyro only, frame 60">
+            <figcaption>Pyro only, frame 60.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/entry08/p2_pyro_f100.jpg" alt="Pyro only, frame 100">
+            <figcaption>Pyro only, frame 100.</figcaption>
+          </figure>
+        </div>
+        <figure>
+          <img src="blog/entry08/p3_pyro_f140.jpg" alt="Pyro only, frame 140">
+          <figcaption>Pyro only, frame 140.</figcaption>
+        </figure>
+        <ul>
+          <li>Four separate pyro sims: burning hero trees, ground fire, embers, and a wide smoke layer.</li>
+          <li>Sources are points made in VEX on the burning tree parts and the burning ground (density, temperature, flame, velocity).</li>
+        </ul>
+        <p><strong>Hero tree fire: Pyro Solver settings used</strong></p>
+        <ul class="spec-list">
+          <li><strong>Voxel size:</strong> 0.12 (sparse solve, max cache 12000 MB)</li>
+          <li><strong>Start frame:</strong> −47 (pre-roll so the fire is already burning at frame 1)</li>
+          <li><strong>Flame lifespan:</strong> 0.7</li>
+          <li><strong>Buoyancy lift:</strong> 0.85</li>
+          <li><strong>Dissipation:</strong> 0.05 (with control field)</li>
+          <li><strong>Wind:</strong> on, strength 2.165, direction −X (screen right, measured from the reference)</li>
+          <li><strong>Disturbance:</strong> 1.2, block size 0.45, pulse length 0.4</li>
+          <li><strong>Turbulence:</strong> 0.6, swirl size 2.5, pulse length 0.96</li>
+          <li><strong>Shredding:</strong> 1.6, block size 0.45</li>
+          <li><strong>Smoke colour:</strong> (0.85, 0.42, 0.16), shadow colour (0.28, 0.08, 0.02)</li>
+          <li><strong>Sourcing:</strong> density, temperature, flame (max) and velocity from the VEX source points</li>
+          <li><strong>Emission:</strong> flame field, emission scale 25</li>
+        </ul>
+
+        <h4>5. What VEX was used for</h4>
+        <ul>
+          <li><strong>Burn timing (BurnTrees):</strong> when each trunk, branch and needle part catches, how long it burns, how much it chars, and needles burning away.</li>
+          <li><strong>Wind on the trees (TreeSway, WindSway):</strong> trees bend and sway with the wind speed measured from the reference, the top following the trunk.</li>
+          <li><strong>Ground fire (GroundFire):</strong> the burning litter line and fire wall along the forest floor.</li>
+          <li><strong>Pyro sources (FireSources, SourceFlicker, FireWallSRC, CrownSpreadSRC, EmberSources):</strong> source points with density, temperature, flame and velocity on the burning parts, flickering over time.</li>
+          <li><strong>Smoke layer (SmokeLayerBG, Left, Right, Feed):</strong> wide smoke sources across the forest, pushed by the wind.</li>
+          <li><strong>Background forest (TreeLinePts):</strong> rows of trees with spacing, jitter and gaps around the hero trees.</li>
+          <li><strong>Matching the reference (MaskTrees, MaskGround, the PlateGlow / PlateFlame / RefSmoke wrangles):</strong> each voxel is projected into the camera so fire, glow and smoke line up with the reference frame by frame.</li>
+          <li><strong>Procedural smoke volumes (FrontSmoke, SmokeBank, ForestSmoke, FireBed, DriftSmoke):</strong> smoke built from smooth noise inside Volume Wrangles; DriftSmoke moves with the wind.</li>
+          <li><strong>Why VEX:</strong> it gives control per point and per voxel, runs fast on every frame, and reads all its timing from the CTRL node, which no single built-in node does.</li>
+        </ul>
+
+        <h4>6. Rendering on the farm (tiled)</h4>
+        <ul>
+          <li>Rendered with Karma XPU from a USD file written by /out/USDFarm.</li>
+          <li>The farm accepts no extra husk options, so the tile is set inside each tile USD (RenderSettings data window): 4 tiles of the same 1920 × 1080 frame, submitted as 4 jobs.</li>
+          <li>Each tile renders a quarter of every frame, which keeps every frame well under the farm's time limit.</li>
+        </ul>
+
+        <h4>7. Comp in Nuke</h4>
+        <ul>
+          <li>The 4 tile EXRs are merged back into the full frame.</li>
+          <li>The joins between the tiles are smoothed out.</li>
+          <li>Fire and lit-smoke AOVs (aov_fire, aov_scatter) allow fire brightness changes without a re-render.</li>
+          <li>Bloom, grade to the reference, and flame highlights rolling off to white.</li>
+        </ul>
+
+        <h3>References</h3>
+        <ul>
+          <li>Reference clip: CBS Mornings news footage of the spring 2026 Georgia fires.</li>
+          <li>Tiled Karma render method: Deborah R. Fowler, <a href="https://www.deborahrfowler.com/HoudiniResources/HoudiniTipsAndTricksRender.html" target="_blank" rel="noopener">Houdini Tips and Tricks: Rendering</a>.</li>
+          <li>SideFX documentation: <a href="https://www.sidefx.com/docs/houdini/solaris/support/inside_husk.html" target="_blank" rel="noopener">Inside husk (render products and tiles)</a>.</li>
+        </ul>
       </article>
     </div>
   </section>
