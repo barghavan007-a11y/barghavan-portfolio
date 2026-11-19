@@ -203,65 +203,82 @@
       to{ opacity:1; transform: translateY(0); }
     }
 
-    /* Demo reel: the name lands first, then hands over to the reel */
-    .home-name.handoff{
-      animation: heroIn 1s cubic-bezier(.22,.61,.36,1) .55s forwards,
-                 nameOut .8s ease 3.1s forwards;
-    }
-    @keyframes nameOut{
-      from{ opacity:1; transform: translateY(0); }
-      to{ opacity:0; transform: translateY(-14px); visibility:hidden; }
-    }
-    .reel-wrap{
-      position:absolute;
+    /* Demo reel: plays full screen straight after the name intro */
+    .reel-full{
+      position:fixed;
       inset:0;
-      border-radius:inherit;
-      overflow:hidden;
+      z-index:2900;
       background:#000;
       opacity:0;
       visibility:hidden;
-      transition: opacity 1s ease;
-      z-index:2;
+      transition: opacity .8s ease, visibility 0s linear .8s;
     }
-    .reel-wrap.show{ opacity:1; visibility:visible; }
-    .reel-wrap video{
+    .reel-full.show{
+      opacity:1;
+      visibility:visible;
+      transition: opacity .8s ease, visibility 0s;
+    }
+    .reel-full video{
       width:100%;
       height:100%;
       object-fit:contain;
       display:block;
       background:#000;
     }
-    .reel-sound{
+    .reel-ui{
       position:absolute;
-      top:18px;
-      right:18px;
-      z-index:3;
+      right:24px;
+      bottom:28px;
+      display:flex;
+      gap:10px;
+      z-index:2;
+    }
+    .reel-btn{
       font-family:'Inter', sans-serif;
-      font-size:.85rem;
-      letter-spacing:.08em;
+      font-size:.82rem;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      border-radius:999px;
+      padding:11px 20px;
+      cursor:pointer;
+      border:1px solid rgba(255,255,255,.25);
+      background:rgba(0,0,0,.45);
+      color:#eee;
+      backdrop-filter: blur(8px);
+      transition: background .2s ease, color .2s ease;
+    }
+    .reel-btn:hover{ background:rgba(255,255,255,.12); }
+    .reel-btn.gold{ background:var(--gold); border-color:var(--gold); color:#111; }
+    .reel-progress{
+      position:absolute;
+      left:0; right:0; bottom:0;
+      height:3px;
+      background:rgba(255,255,255,.08);
+      z-index:2;
+    }
+    .reel-progress span{
+      display:block;
+      height:100%;
+      width:0;
+      background:var(--gold);
+    }
+    .home-inner{ display:flex; flex-direction:column; align-items:center; gap:34px; }
+    .watch-reel{
+      opacity:0;
+      animation: heroIn 1s cubic-bezier(.22,.61,.36,1) .9s forwards;
+      font-family:'Inter', sans-serif;
+      font-size:.9rem;
+      letter-spacing:.16em;
       text-transform:uppercase;
       color:#111;
       background:var(--gold);
       border:0;
       border-radius:999px;
-      padding:10px 18px;
+      padding:14px 28px;
       cursor:pointer;
-      box-shadow:0 6px 24px rgba(0,0,0,.45);
-      transition: transform .2s ease, opacity .2s ease;
+      box-shadow:0 10px 30px rgba(0,0,0,.4);
     }
-    .reel-sound:hover{ transform: translateY(-1px); }
-    .reel-label{
-      position:absolute;
-      top:18px;
-      left:22px;
-      z-index:3;
-      font-family:'Inter', sans-serif;
-      font-size:.78rem;
-      letter-spacing:.2em;
-      text-transform:uppercase;
-      color:rgba(255,255,255,.75);
-      pointer-events:none;
-    }
+    .watch-reel:hover{ transform: translateY(-1px); }
 
     .projects-wrap{
       max-width: 1320px;
@@ -648,17 +665,6 @@
         border-radius: 22px;
       }
 
-      /* phones: size the home card to the reel so it is not a thin strip */
-      #home.active{ align-items:flex-start; }
-      .home-shell{
-        min-height: 0;
-        aspect-ratio: 16 / 9;
-        margin-top: 14px;
-      }
-      .home-name{ font-size: clamp(1.9rem, 9vw, 3rem); }
-      .reel-label{ display:none; }
-      .reel-sound{ top:auto; bottom:10px; right:10px; padding:7px 12px; font-size:.7rem; }
-
       .card img {
         height: 320px;
       }
@@ -678,6 +684,15 @@
     <div class="intro-text">Barghavan Rajeshkanna</div>
   </div>
 
+  <div class="reel-full" id="reelFull">
+    <video id="reelVideo" src="reel/demoreel.mp4" poster="reel/demoreel_poster.jpg" muted playsinline preload="auto"></video>
+    <div class="reel-ui">
+      <button class="reel-btn gold" id="reelSound" type="button">Sound on</button>
+      <button class="reel-btn" id="reelSkip" type="button">Enter site</button>
+    </div>
+    <div class="reel-progress"><span id="reelBar"></span></div>
+  </div>
+
   <nav>
     <div class="brand">
       <b>Barghavan Rajeshkanna</b>
@@ -694,11 +709,9 @@
 
   <section id="home" class="active">
     <div class="home-shell">
-      <div class="home-name handoff">Barghavan<br>Rajeshkanna</div>
-      <div class="reel-wrap" id="reelWrap">
-        <span class="reel-label">FX Demo Reel 2026</span>
-        <button class="reel-sound" id="reelSound" type="button">Sound on</button>
-        <video id="reelVideo" src="reel/demoreel.mp4" poster="reel/demoreel_poster.jpg" muted loop playsinline preload="auto" controls></video>
+      <div class="home-inner">
+        <div class="home-name">Barghavan<br>Rajeshkanna</div>
+        <button class="watch-reel" id="watchReel" type="button">Watch Demo Reel</button>
       </div>
     </div>
   </section>
@@ -715,6 +728,14 @@
           <div class="card-title">
             <h3>Harmonium</h3>
             <p>FX · Particle Disintegration</p>
+          </div>
+        </div>
+
+        <div class="card" onclick="openProject('piggybank')">
+          <img src="projects/piggybank/piggybank_poster.jpg" alt="Ceramic piggy bank shattered into pieces with gold coins and dust">
+          <div class="card-title">
+            <h3>Piggy Bank Destruction</h3>
+            <p>FX · Rigid Body Destruction</p>
           </div>
         </div>
 
@@ -752,11 +773,37 @@
           film halation, grain and a light vignette.
         </p>
         <p class="project-description">
+          <strong style="color:var(--text)">Role:</strong> Responsible for all aspects ·
           <strong style="color:var(--text)">Software:</strong> Houdini (Solaris, particles), Redshift, Karma, Nuke ·
           <strong style="color:var(--text)">Format:</strong> 1920 × 1080, 24 fps
         </p>
         <div class="project-main-image">
           <video src="projects/harmonium/harmonium_disintegration.mp4" poster="projects/harmonium/harmonium_poster.jpg" controls muted loop playsinline preload="metadata" style="width:100%;display:block;border-radius:18px;border:1px solid rgba(255,255,255,0.07);background:#111;"></video>
+        </div>
+      </div>
+
+      <div id="piggybank" class="project-view">
+        <div class="back" onclick="closeProject()">← Back to Projects</div>
+        <h1>Piggy Bank Destruction</h1>
+        <p class="project-description">
+          A pink ceramic piggy bank stands on a black, glossy floor and shatters, throwing ceramic shards, gold coins and a
+          cloud of dust across the frame. The shot recreates the break, the debris spread and the settling coins of a stock
+          reference clip (VFX 728, Exercise 4).
+        </p>
+        <p class="project-description">
+          Built in Houdini 22. A painted burst mask drives the fracture size, the glue constraints and the initial velocity,
+          so the pieces near the impact break small and fly fast while the far side breaks into larger shards. The legs and snout
+          are fractured as separate parts, and fine ceramic debris is added on top of the main RBD sim. The coins are modelled
+          in detail (reeded edge, embossed lettering) and settle flat on the floor. The dust is a Pyro sim cached as sparse VDBs.
+          Lit and rendered in Solaris with Karma XPU on the render farm.
+        </p>
+        <p class="project-description">
+          <strong style="color:var(--text)">Role:</strong> Responsible for all aspects ·
+          <strong style="color:var(--text)">Software:</strong> Houdini 22 (RBD, Pyro, Solaris), Karma XPU ·
+          <strong style="color:var(--text)">Format:</strong> 1920 × 1080, 24 fps
+        </p>
+        <div class="project-main-image">
+          <video src="projects/piggybank/piggybank_destruction.mp4" poster="projects/piggybank/piggybank_poster.jpg" controls muted playsinline preload="metadata" style="width:100%;display:block;border-radius:18px;border:1px solid rgba(255,255,255,0.07);background:#111;"></video>
         </div>
       </div>
 
@@ -784,6 +831,10 @@
         <h1>Still Life</h1>
         <p class="project-description">
           A cinematic still life project focused on composition, shading, and visual mood. This work explores realistic materials, lighting balance, and polished presentation through procedural workflows. The project emphasizes a refined visual style while maintaining strong form, texture, and cinematic framing.
+        </p>
+        <p class="project-description">
+          <strong style="color:var(--text)">Role:</strong> Responsible for all aspects ·
+          <strong style="color:var(--text)">Software:</strong> Houdini 22 (VEX, Copernicus, Vellum, Solaris), Karma XPU
         </p>
         <div class="project-main-image">
           <video src="projects/stilllife/still_life_push.mp4" poster="1.jpg" autoplay muted loop playsinline preload="auto" style="width:100%;display:block;border-radius:18px;border:1px solid rgba(255,255,255,0.07);background:#111;"></video>
@@ -2573,27 +2624,37 @@
   </section>
 
   <script>
-    // Demo reel on Home: starts right after the name animation, muted (browser autoplay rule) with a sound toggle
+    // Demo reel: full screen right after the name intro (muted, browsers block autoplay with sound)
     (function () {
-      const wrap = document.getElementById("reelWrap");
+      const full = document.getElementById("reelFull");
       const vid = document.getElementById("reelVideo");
-      const btn = document.getElementById("reelSound");
-      setTimeout(() => {
-        wrap.classList.add("show");
+      const snd = document.getElementById("reelSound");
+      const bar = document.getElementById("reelBar");
+      const label = () => { snd.textContent = vid.muted ? "Sound on" : "Mute"; };
+      function openReel(withSound) {
+        full.classList.add("show");
+        document.body.style.overflow = "hidden";
         vid.currentTime = 0;
-        vid.play().catch(() => {});
-      }, 3500);
-      btn.addEventListener("click", () => {
-        vid.muted = !vid.muted;
-        if (!vid.muted && vid.paused) vid.play();
-        btn.textContent = vid.muted ? "Sound on" : "Mute";
-      });
-      vid.addEventListener("volumechange", () => { btn.textContent = vid.muted ? "Sound on" : "Mute"; });
+        if (withSound) vid.muted = false;
+        vid.play().catch(() => { vid.muted = true; vid.play().catch(() => {}); });
+        label();
+      }
+      function closeReel() {
+        full.classList.remove("show");
+        document.body.style.overflow = "";
+        vid.pause();
+      }
+      setTimeout(() => openReel(false), 1900);
+      snd.addEventListener("click", () => { vid.muted = !vid.muted; if (vid.paused) vid.play(); label(); });
+      document.getElementById("reelSkip").addEventListener("click", closeReel);
+      document.getElementById("watchReel").addEventListener("click", () => openReel(true));
+      vid.addEventListener("ended", closeReel);
+      vid.addEventListener("click", () => { vid.paused ? vid.play() : vid.pause(); });
+      vid.addEventListener("timeupdate", () => { if (vid.duration) bar.style.width = (100 * vid.currentTime / vid.duration) + "%"; });
+      document.addEventListener("keydown", e => { if (e.key === "Escape" && full.classList.contains("show")) closeReel(); });
     })();
 
     function showPage(pageId, el) {
-      const reel = document.getElementById("reelVideo");
-      if (reel) { if (pageId === "home") { if (document.getElementById("reelWrap").classList.contains("show")) reel.play().catch(() => {}); } else reel.pause(); }
       document.querySelectorAll("section").forEach(section => {
         section.classList.remove("active");
       });
