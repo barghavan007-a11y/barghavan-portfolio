@@ -2361,9 +2361,17 @@
 
         <h4>7. Comp in Nuke</h4>
         <figure>
-          <img src="blog/entry08/n1_nuke_comp_network.jpg" alt="Nuke comp network">
-          <figcaption>Nuke comp network (GAFIREcompv3.nk): the 4 tiles are merged, the joins fixed, fire and smoke adjusted from the AOVs, then the look and the write.</figcaption>
+          <img src="blog/entry08/n2_nuke_network_screenshot.jpg" alt="Nuke node graph of the comp">
+          <figcaption>Nuke screenshot of the comp node graph (GAFIREcompv3.nk).</figcaption>
         </figure>
+        <ul>
+          <li><strong>Tile1–Tile4 → MergeT12 / MergeT123 / MergeAll:</strong> the four farm tiles added back into one frame.</li>
+          <li><strong>CropToFrame:</strong> trims the extra border Nuke adds around each tile.</li>
+          <li><strong>SeamMaskV, SeamMaskH, SeamBlur, SeamFix:</strong> a soft strip over the tile joins mixes in a softened copy, only there.</li>
+          <li><strong>FireOnly → FIRE_amount → AddFire, SmokeOnly → SMOKE_glow_amount → AddSmoke:</strong> fire and lit-smoke brightness from the AOVs, without re-rendering.</li>
+          <li><strong>Look_Bloom, Look_ToDisplay, Look_Grade, Look_ToLinear:</strong> glow around the fire and the grade matched to the reference.</li>
+          <li><strong>WriteFinal:</strong> png sequence, then a movie for the final video.</li>
+        </ul>
         <ul>
           <li>The 4 tile EXRs are merged back into the full frame.</li>
           <li>The joins between the tiles are smoothed out.</li>
