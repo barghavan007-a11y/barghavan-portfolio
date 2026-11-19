@@ -2259,6 +2259,71 @@
           <li><strong>Why VEX:</strong> it gives control per point and per voxel, runs fast on every frame, and reads all its timing from the CTRL node, which no single built-in node does.</li>
         </ul>
 
+        <p><strong>The code</strong> (every line is commented in the hip file):</p>
+        <figure>
+          <img src="blog/entry08/v1_burntrees.jpg" alt="BurnTrees (Attribute Wrangle, primitives) VEX code">
+          <figcaption>BurnTrees (Attribute Wrangle, primitives)</figcaption>
+        </figure>
+        <ul>
+          <li>Reads the tree heights, positions and crown start stored on the trees, and the timing values from the CTRL node.</li>
+          <li>Works out when each part catches: the ground fire reaches the tree, flames climb the trunk, then the crown torches from the bottom up.</li>
+          <li>Writes <code>flame</code>, <code>char</code>, <code>ember</code> and <code>emit</code> for the shaders and the pyro sources.</li>
+          <li>Needles and dead twigs are removed as they burn away.</li>
+        </ul>
+        <figure>
+          <img src="blog/entry08/v2_treesway.jpg" alt="TreeSway (Attribute Wrangle, points) VEX code">
+          <figcaption>TreeSway (Attribute Wrangle, points)</figcaption>
+        </figure>
+        <ul>
+          <li>Bends every tree downwind; the push grows with the wind speed squared, and the top follows the trunk a little later.</li>
+          <li>A gust pattern travels across the trees, so they do not all move together.</li>
+          <li>Branch tips stream and droop in the gusts, and the needle clusters shimmer a few centimetres.</li>
+        </ul>
+        <figure>
+          <img src="blog/entry08/v3_windsway.jpg" alt="WindSway (Attribute Wrangle, forest instance points) VEX code">
+          <figcaption>WindSway (Attribute Wrangle, forest instance points)</figcaption>
+        </figure>
+        <ul>
+          <li>Trees standing in front of the two burning hero trees are swapped to burnt snags or thin broken crowns, so the burning trees read through them.</li>
+          <li>Each forest tree tilts about its base: one slow gust shared by all trees plus its own sway, with timing matched to the reference.</li>
+        </ul>
+        <figure>
+          <img src="blog/entry08/v4_groundfire.jpg" alt="GroundFire (Attribute Wrangle, ground grid points) VEX code">
+          <figcaption>GroundFire (Attribute Wrangle, ground grid points)</figcaption>
+        </figure>
+        <ul>
+          <li>A ragged front edge of burning litter creeps toward the camera.</li>
+          <li>The burning strip along the base of the trees follows where the reference burns, column by column.</li>
+          <li>A separate fire wall band burns among the trunks; colour goes from dry litter to char and glowing embers.</li>
+        </ul>
+        <figure>
+          <img src="blog/entry08/v5_firesources.jpg" alt="FireSources (Attribute Wrangle, detail) VEX code">
+          <figcaption>FireSources (Attribute Wrangle, detail)</figcaption>
+        </figure>
+        <ul>
+          <li>Goes through every burning prim of the trees and scatters source points on it, more on bigger and harder-burning prims.</li>
+          <li>Each point gets <code>density</code>, <code>temperature</code>, <code>flame</code>, <code>v</code> and <code>pscale</code> for the Pyro Solver.</li>
+          <li>Adds source points on the burning ground as well, with more lift inside the fire wall.</li>
+        </ul>
+        <figure>
+          <img src="blog/entry08/v6_masktrees.jpg" alt="MaskTrees (Volume Wrangle) VEX code">
+          <figcaption>MaskTrees (Volume Wrangle)</figcaption>
+        </figure>
+        <ul>
+          <li>Projects every voxel of the simulated fire into the shot camera.</li>
+          <li>Looks up how much flame the reference shows at that spot in that frame.</li>
+          <li>Keeps the simulated fire only where the reference burns, so the fire placement lines up frame by frame.</li>
+        </ul>
+        <figure>
+          <img src="blog/entry08/v7_driftsmoke.jpg" alt="DriftSmoke (Volume Wrangle) VEX code">
+          <figcaption>DriftSmoke (Volume Wrangle)</figcaption>
+        </figure>
+        <ul>
+          <li><code>vnoise()</code> is a smooth noise function written in VEX: random values on a lattice, blended with a smoothstep.</li>
+          <li>The noise is sampled in the moving air, so the smoke pattern drifts sideways with the wind at the speed measured from the reference.</li>
+          <li>Falloffs keep it low and thin away from the fire; a faint glow is added next to the fire.</li>
+        </ul>
+
         <h4>6. Rendering on the farm (tiled)</h4>
         <ul>
           <li>Rendered with Karma XPU from a USD file written by /out/USDFarm.</li>
@@ -2267,12 +2332,58 @@
         </ul>
 
         <h4>7. Comp in Nuke</h4>
+        <figure>
+          <img src="blog/entry08/n1_nuke_comp_network.jpg" alt="Nuke comp network">
+          <figcaption>Nuke comp network (GAFIREcompv3.nk): the 4 tiles are merged, the joins fixed, fire and smoke adjusted from the AOVs, then the look and the write.</figcaption>
+        </figure>
         <ul>
           <li>The 4 tile EXRs are merged back into the full frame.</li>
           <li>The joins between the tiles are smoothed out.</li>
           <li>Fire and lit-smoke AOVs (aov_fire, aov_scatter) allow fire brightness changes without a re-render.</li>
           <li>Bloom, grade to the reference, and flame highlights rolling off to white.</li>
         </ul>
+
+        <h3>Problems and Solutions</h3>
+
+        <h4>Problem 1: render farm stopping the frames</h4>
+        <figure>
+          <img src="blog/entry08/pr1_farm_kill.jpg" alt="Render farm job list with MAX RETRY errors">
+          <figcaption>The farm stopped the full-frame job: "MAX RETRY count: 6+ bad frames in job detected".</figcaption>
+        </figure>
+        <ul>
+          <li><strong>Problem:</strong> each full 1920 × 1080 frame took too long, so the farm kept retrying and then stopped the whole job.</li>
+          <li><strong>Solution:</strong> tiled rendering, following Prof. Fowler's method. The frame is split into 4 tiles (2 × 2) set inside each tile USD (RenderSettings data window), because the farm takes no extra render options.</li>
+          <li>Each tile is its own farm job, renders a quarter of every frame, and finished in about 15–25 minutes.</li>
+        </ul>
+        <figure>
+          <img src="blog/entry08/pr2_one_tile.jpg" alt="One farm tile in Nuke showing only a quarter of the frame">
+          <figcaption>One tile on its own in Nuke: only its quarter of the frame is rendered.</figcaption>
+        </figure>
+
+        <h4>Problem 2: seams where the tiles meet</h4>
+        <div class="post-pair">
+          <figure>
+            <img src="blog/entry08/pr3_tile_colour_seam.jpg" alt="Two tiles with a visible colour difference">
+            <figcaption>The first merge showed a visible join between the tiles.</figcaption>
+          </figure>
+          <figure>
+            <img src="blog/entry08/pr4_seam_line.jpg" alt="Thin horizontal line across the trunks">
+            <figcaption>A thin line across the trunks where the top and bottom tiles meet.</figcaption>
+          </figure>
+        </div>
+        <ul>
+          <li><strong>Problem:</strong> each tile is denoised on its own and has no pixels from its neighbour, so the pixels at the tile edge come out slightly different and show as a line.</li>
+          <li><strong>Solution in comp, step 1:</strong> all four tiles from the same render batch, then a soft mask over the vertical and horizontal joins mixes in a softened copy only inside a thin strip (SeamMaskV, SeamMaskH, SeamBlur, SeamFix).</li>
+          <li><strong>Step 2:</strong> the brightness step left across the joins was blended out over a wider area, and the thin band across the trunks was rebuilt from the texture just above it, level-matched to the rows above and below. The trunks are vertical, so they continue cleanly through the join.</li>
+        </ul>
+        <figure>
+          <img src="blog/entry08/pr5_seam_before.jpg" alt="Before: line across the trunks">
+          <figcaption>Before: the line across the trunks (frame 100, crop).</figcaption>
+        </figure>
+        <figure>
+          <img src="blog/entry08/pr6_seam_after.jpg" alt="After: the join is gone">
+          <figcaption>After: the join is gone.</figcaption>
+        </figure>
 
         <h3>References</h3>
         <ul>
