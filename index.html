@@ -2261,8 +2261,12 @@
 
         <p><strong>The code</strong> (every line is commented in the hip file):</p>
         <figure>
+          <img src="blog/entry08/v1_burntrees_houdini.jpg" alt="BurnTrees (Attribute Wrangle, primitives) in Houdini">
+          <figcaption>Houdini screenshot: BurnTrees (Attribute Wrangle, primitives), its code and where it sits in the network.</figcaption>
+        </figure>
+        <figure>
           <img src="blog/entry08/v1_burntrees.jpg" alt="BurnTrees (Attribute Wrangle, primitives) VEX code">
-          <figcaption>BurnTrees (Attribute Wrangle, primitives)</figcaption>
+          <figcaption>BurnTrees (Attribute Wrangle, primitives), full code.</figcaption>
         </figure>
         <ul>
           <li>Reads the tree heights, positions and crown start stored on the trees, and the timing values from the CTRL node.</li>
@@ -2271,8 +2275,12 @@
           <li>Needles and dead twigs are removed as they burn away.</li>
         </ul>
         <figure>
+          <img src="blog/entry08/v2_treesway_houdini.jpg" alt="TreeSway (Attribute Wrangle, points) in Houdini">
+          <figcaption>Houdini screenshot: TreeSway (Attribute Wrangle, points), its code and where it sits in the network.</figcaption>
+        </figure>
+        <figure>
           <img src="blog/entry08/v2_treesway.jpg" alt="TreeSway (Attribute Wrangle, points) VEX code">
-          <figcaption>TreeSway (Attribute Wrangle, points)</figcaption>
+          <figcaption>TreeSway (Attribute Wrangle, points), full code.</figcaption>
         </figure>
         <ul>
           <li>Bends every tree downwind; the push grows with the wind speed squared, and the top follows the trunk a little later.</li>
@@ -2280,16 +2288,24 @@
           <li>Branch tips stream and droop in the gusts, and the needle clusters shimmer a few centimetres.</li>
         </ul>
         <figure>
+          <img src="blog/entry08/v3_windsway_houdini.jpg" alt="WindSway (Attribute Wrangle, forest instance points) in Houdini">
+          <figcaption>Houdini screenshot: WindSway (Attribute Wrangle, forest instance points), its code and where it sits in the network.</figcaption>
+        </figure>
+        <figure>
           <img src="blog/entry08/v3_windsway.jpg" alt="WindSway (Attribute Wrangle, forest instance points) VEX code">
-          <figcaption>WindSway (Attribute Wrangle, forest instance points)</figcaption>
+          <figcaption>WindSway (Attribute Wrangle, forest instance points), full code.</figcaption>
         </figure>
         <ul>
           <li>Trees standing in front of the two burning hero trees are swapped to burnt snags or thin broken crowns, so the burning trees read through them.</li>
           <li>Each forest tree tilts about its base: one slow gust shared by all trees plus its own sway, with timing matched to the reference.</li>
         </ul>
         <figure>
+          <img src="blog/entry08/v4_groundfire_houdini.jpg" alt="GroundFire (Attribute Wrangle, ground grid points) in Houdini">
+          <figcaption>Houdini screenshot: GroundFire (Attribute Wrangle, ground grid points), its code and where it sits in the network.</figcaption>
+        </figure>
+        <figure>
           <img src="blog/entry08/v4_groundfire.jpg" alt="GroundFire (Attribute Wrangle, ground grid points) VEX code">
-          <figcaption>GroundFire (Attribute Wrangle, ground grid points)</figcaption>
+          <figcaption>GroundFire (Attribute Wrangle, ground grid points), full code.</figcaption>
         </figure>
         <ul>
           <li>A ragged front edge of burning litter creeps toward the camera.</li>
@@ -2297,8 +2313,12 @@
           <li>A separate fire wall band burns among the trunks; colour goes from dry litter to char and glowing embers.</li>
         </ul>
         <figure>
+          <img src="blog/entry08/v5_firesources_houdini.jpg" alt="FireSources (Attribute Wrangle, detail) in Houdini">
+          <figcaption>Houdini screenshot: FireSources (Attribute Wrangle, detail), its code and where it sits in the network.</figcaption>
+        </figure>
+        <figure>
           <img src="blog/entry08/v5_firesources.jpg" alt="FireSources (Attribute Wrangle, detail) VEX code">
-          <figcaption>FireSources (Attribute Wrangle, detail)</figcaption>
+          <figcaption>FireSources (Attribute Wrangle, detail), full code.</figcaption>
         </figure>
         <ul>
           <li>Goes through every burning prim of the trees and scatters source points on it, more on bigger and harder-burning prims.</li>
@@ -2306,8 +2326,12 @@
           <li>Adds source points on the burning ground as well, with more lift inside the fire wall.</li>
         </ul>
         <figure>
+          <img src="blog/entry08/v6_masktrees_houdini.jpg" alt="MaskTrees (Volume Wrangle) in Houdini">
+          <figcaption>Houdini screenshot: MaskTrees (Volume Wrangle), its code and where it sits in the network.</figcaption>
+        </figure>
+        <figure>
           <img src="blog/entry08/v6_masktrees.jpg" alt="MaskTrees (Volume Wrangle) VEX code">
-          <figcaption>MaskTrees (Volume Wrangle)</figcaption>
+          <figcaption>MaskTrees (Volume Wrangle), full code.</figcaption>
         </figure>
         <ul>
           <li>Projects every voxel of the simulated fire into the shot camera.</li>
@@ -2315,8 +2339,12 @@
           <li>Keeps the simulated fire only where the reference burns, so the fire placement lines up frame by frame.</li>
         </ul>
         <figure>
+          <img src="blog/entry08/v7_driftsmoke_houdini.jpg" alt="DriftSmoke (Volume Wrangle) in Houdini">
+          <figcaption>Houdini screenshot: DriftSmoke (Volume Wrangle), its code and where it sits in the network.</figcaption>
+        </figure>
+        <figure>
           <img src="blog/entry08/v7_driftsmoke.jpg" alt="DriftSmoke (Volume Wrangle) VEX code">
-          <figcaption>DriftSmoke (Volume Wrangle)</figcaption>
+          <figcaption>DriftSmoke (Volume Wrangle), full code.</figcaption>
         </figure>
         <ul>
           <li><code>vnoise()</code> is a smooth noise function written in VEX: random values on a lattice, blended with a smoothstep.</li>
